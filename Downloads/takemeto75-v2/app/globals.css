@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --gradient-warm: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 50%, #ee5a24 100%);
+  --gradient-cool: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+body {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  background-color: #0a0a0a;
+  color: #fafafa;
+}
+
+/* Noise overlay effect */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.03;
+  z-index: 1000;
+  background-image: var(--noise);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-warm {
+  background: var(--gradient-warm);
+}
+
+.bg-gradient-cool {
+  background: var(--gradient-cool);
+}
+
+/* Card styling */
+.card {
+  @apply bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl;
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:border-zinc-700 hover:shadow-xl hover:shadow-orange-500/5;
+}
+
+/* Tier badges */
+.tier-base {
+  @apply bg-zinc-700 text-zinc-200;
+}
+
+.tier-premium {
+  @apply bg-gradient-to-r from-amber-500 to-orange-600 text-white;
+}
+
+.tier-luxe {
+  @apply bg-gradient-to-r from-violet-500 to-purple-700 text-white;
+}
+
+/* Button styles */
+.btn-primary {
+  @apply px-6 py-3 rounded-xl font-semibold transition-all duration-200;
+  @apply bg-gradient-to-r from-orange-500 to-red-500 text-white;
+  @apply hover:from-orange-600 hover:to-red-600 hover:shadow-lg hover:shadow-orange-500/25;
+  @apply active:scale-[0.98];
+}
+
+.btn-secondary {
+  @apply px-6 py-3 rounded-xl font-semibold transition-all duration-200;
+  @apply bg-zinc-800 text-white border border-zinc-700;
+  @apply hover:bg-zinc-700 hover:border-zinc-600;
+  @apply active:scale-[0.98];
+}
+
+/* Temperature display */
+.temp-display {
+  @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium;
+  @apply bg-orange-500/20 text-orange-400;
+}
+
+/* Loading animation */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.loading-pulse {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Skeleton loading */
+.skeleton {
+  @apply bg-zinc-800 rounded animate-pulse;
+}
+
+/* Flight path line */
+.flight-path {
+  @apply relative;
+}
+
+.flight-path::before {
+  content: '';
+  @apply absolute top-1/2 left-0 right-0 h-px bg-zinc-700;
+  transform: translateY(-50%);
+}
+
+.flight-path::after {
+  content: '✈';
+  @apply absolute top-1/2 left-1/2 text-orange-500;
+  transform: translate(-50%, -50%);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-zinc-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-zinc-600;
+}
+
+/* Glass effect */
+.glass {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10;
+}
+
+/* Animate in */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+/* Staggered animation delays */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
