@@ -58,17 +58,22 @@ export async function searchHotels(
       };
       cheapest_rate_total_amount: string;
       cheapest_rate_currency: string;
-    }) => ({
+    }): HotelOffer => ({
       id: result.id,
       name: result.accommodation.name,
       starRating: result.accommodation.rating?.value || 4,
       reviewScore: result.accommodation.review_score || 85,
+      reviewCount: 0,
       price: parseFloat(result.cheapest_rate_total_amount),
       currency: result.cheapest_rate_currency,
+      address: result.accommodation.location?.address?.line_one || '',
+      distanceFromCenter: '',
+      photos: result.accommodation.photos?.map(p => p.url) || [],
+      amenities: result.accommodation.amenities?.map(a => a.description) || [],
       roomType: 'Standard Room',
       freeCancellation: true,
       breakfastIncluded: false,
-      photo: result.accommodation.photos?.[0]?.url || '',
+      url: '',
     }));
   } catch (error) {
     console.error('Duffel Stays error:', error);
@@ -110,16 +115,21 @@ function getMockHotels(checkIn: string, checkOut: string): HotelOffer[] {
     { name: 'Downtown Lodge', stars: 3, basePrice: 85, score: 81 },
   ];
 
-  return hotels.map((h, i) => ({
+  return hotels.map((h, i): HotelOffer => ({
     id: `hotel_${i}_${Date.now()}`,
     name: h.name,
     starRating: h.stars,
     reviewScore: h.score,
+    reviewCount: 100 + Math.floor(Math.random() * 500),
     price: h.basePrice * nights + Math.random() * 50,
     currency: 'USD',
+    address: 'City Center',
+    distanceFromCenter: '0.5 km from center',
+    photos: [`https://picsum.photos/seed/${i + 100}/400/300`],
+    amenities: ['Free WiFi', 'Air conditioning'],
     roomType: h.stars >= 4 ? 'Deluxe King Room' : 'Standard Room',
     freeCancellation: h.stars >= 4,
     breakfastIncluded: h.stars >= 5,
-    photo: `https://picsum.photos/seed/${i + 100}/400/300`,
+    url: '',
   }));
 }

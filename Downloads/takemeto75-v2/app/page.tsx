@@ -98,9 +98,14 @@ export default function Home() {
 
   // Handle booking
   async function handleBook(pkg: TripPackage) {
-    // For now, just show the deep links
-    // In production, this would open a checkout modal
-    alert(`Booking ${pkg.destination.city}!\n\nFlight: ${pkg.flight.airline}\nHotel: ${pkg.hotel.name}\nTotal: ${formatPrice(pkg.totalPrice)}\n\nThis would open checkout...`);
+    // Open hotel booking in new tab (with AWIN tracking)
+    if (pkg.hotel.url) {
+      window.open(pkg.hotel.url, '_blank', 'noopener,noreferrer');
+    }
+
+    // Show flight booking confirmation
+    // TODO: Integrate with Duffel checkout when ready
+    alert(`Flight with ${pkg.flight.airline} - ${formatPrice(pkg.flight.price)}\n\nHotel booking opened in new tab.\n\nFlight checkout coming soon...`);
   }
 
   return (
