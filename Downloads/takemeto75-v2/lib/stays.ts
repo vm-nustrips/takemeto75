@@ -63,12 +63,17 @@ export async function searchHotels(
       name: result.accommodation.name,
       starRating: result.accommodation.rating?.value || 4,
       reviewScore: result.accommodation.review_score || 85,
+      reviewCount: 0,
       price: parseFloat(result.cheapest_rate_total_amount),
       currency: result.cheapest_rate_currency,
+      address: result.accommodation.location?.address?.line_one || '',
+      distanceFromCenter: '',
+      photos: result.accommodation.photos?.map(p => p.url) || [],
+      amenities: result.accommodation.amenities?.map(a => a.description) || [],
       roomType: 'Standard Room',
       freeCancellation: true,
       breakfastIncluded: false,
-      photo: result.accommodation.photos?.[0]?.url || '',
+      url: '',
     }));
   } catch (error) {
     console.error('Duffel Stays error:', error);
@@ -115,11 +120,16 @@ function getMockHotels(checkIn: string, checkOut: string): HotelOffer[] {
     name: h.name,
     starRating: h.stars,
     reviewScore: h.score,
+    reviewCount: 100 + Math.floor(Math.random() * 500),
     price: h.basePrice * nights + Math.random() * 50,
     currency: 'USD',
+    address: '',
+    distanceFromCenter: '',
+    photos: [`https://picsum.photos/seed/${i + 100}/400/300`],
+    amenities: ['Free WiFi', 'Air Conditioning'],
     roomType: h.stars >= 4 ? 'Deluxe King Room' : 'Standard Room',
     freeCancellation: h.stars >= 4,
     breakfastIncluded: h.stars >= 5,
-    photo: `https://picsum.photos/seed/${i + 100}/400/300`,
+    url: '',
   }));
 }
