@@ -1,362 +1,348 @@
 import { HotelOffer, HotelSearch, Tier, TIER_CONFIG } from './types';
-import { generateBookingLink } from './awin';
-import Anthropic from '@anthropic-ai/sdk';
 
-// Amadeus API credentials
-const AMADEUS_CLIENT_ID = process.env.AMADEUS_CLIENT_ID || '';
-const AMADEUS_CLIENT_SECRET = process.env.AMADEUS_CLIENT_SECRET || '';
-const AMADEUS_ENV = process.env.AMADEUS_ENV || 'test'; // 'test' or 'production'
-const AMADEUS_BASE_URL = AMADEUS_ENV === 'production'
-  ? 'https://api.amadeus.com'
-  : 'https://test.api.amadeus.com';
+const BOOKING_API_KEY = process.env.BOOKING_API_KEY || '';
+const BOOKING_AFFILIATE_ID = process.env.BOOKING_AFFILIATE_ID || '';
+const BASE_URL = 'https://demandapi.booking.com/3.1';
 
-// Cache for Amadeus token
-let amadeusToken: { token: string; expiresAt: number } | null = null;
+interface BookingHeaders {
+  'Authorization': string;
+  'X-Affiliate-Id': string;
+  'Content-Type': string;
+}
 
-// ===========================================
-// AMADEUS AUTH
-// ===========================================
-
-async function getAmadeusToken(): Promise<string | null> {
-  if (!AMADEUS_CLIENT_ID || !AMADEUS_CLIENT_SECRET) {
-    return null;
-  }
-
-  // Return cached token if still valid
-  if (amadeusToken && amadeusToken.expiresAt > Date.now()) {
-    return amadeusToken.token;
-  }
-
-  try {
-    const response = await fetch(`${AMADEUS_BASE_URL}/v1/security/oauth2/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        grant_type: 'client_credentials',
-        client_id: AMADEUS_CLIENT_ID,
-        client_secret: AMADEUS_CLIENT_SECRET,
-      }),
-    });
-
-    if (!response.ok) {
-      console.error('Amadeus auth failed:', await response.text());
-      return null;
-    }
-
-    const data = await response.json();
-    amadeusToken = {
-      token: data.access_token,
-      expiresAt: Date.now() + (data.expires_in - 60) * 1000, // Refresh 1 min early
-    };
-    return amadeusToken.token;
-  } catch (error) {
-    console.error('Amadeus auth error:', error);
-    return null;
-  }
+function getHeaders(): BookingHeaders {
+  return {
+    'Authorization': `Bearer ${BOOKING_API_KEY}`,
+    'X-Affiliate-Id': BOOKING_AFFILIATE_ID,
+    'Content-Type': 'application/json',
+  };
 }
 
 // ===========================================
-// AMADEUS HOTEL SEARCH
+// SEARCH ACCOMMODATIONS
 // ===========================================
 
-interface AmadeusHotel {
-  hotelId: string;
+interface BookingSearchPayload {
+  booker: {
+    country: string;
+    platform: string;
+  };
+  checkin: string;
+  checkout: string;
+  guests: {
+    number_of_adults: number;
+    number_of_rooms: number;
+  };
+  city?: number;
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+    radius: number;
+  };
+  filters?: {
+    class?: number[];
+    review_score?: {
+      min: number;
+    };
+  };
+  extras?: string[];
+}
+
+interface BookingAccommodation {
+  id: number;
   name: string;
-  rating?: number;
+  class: number;
+  review_score: number;
+  number_of_reviews: number;
+  address: string;
+  city: string;
+  country: string;
+  currency: string;
   latitude: number;
   longitude: number;
-  address?: {
-    lines?: string[];
-    cityName?: string;
-    countryCode?: string;
-  };
-  distance?: {
-    value: number;
-    unit: string;
-  };
-}
-
-interface AmadeusHotelOffer {
-  hotel: AmadeusHotel;
-  offers: Array<{
+  url: string;
+  deep_link_url: string;
+  photos?: Array<{
+    url: string;
+  }>;
+  products?: Array<{
     id: string;
     price: {
       total: string;
       currency: string;
     };
-    room?: {
-      type?: string;
-      description?: { text?: string };
-    };
-    policies?: {
-      cancellations?: Array<{ type?: string }>;
+    room_name: string;
+    meal_plan?: string;
+    cancellation?: {
+      type: string;
     };
   }>;
+  facilities?: Array<{
+    name: string;
+  }>;
+  distance_to_city_centre?: {
+    value: number;
+    unit: string;
+  };
 }
 
-async function searchAmadeusHotels(
-  lat: number,
-  lon: number,
-  checkIn: string,
-  checkOut: string,
-  adults: number = 2,
-  starRatings: number[] = [3, 4, 5]
-): Promise<AmadeusHotelOffer[]> {
-  const token = await getAmadeusToken();
-  if (!token) {
-    console.log('No Amadeus token - falling back to AI recommendations');
-    return [];
-  }
-
-  try {
-    // Step 1: Get hotels by geocode
-    const hotelsUrl = new URL(`${AMADEUS_BASE_URL}/v1/reference-data/locations/hotels/by-geocode`);
-    hotelsUrl.searchParams.set('latitude', lat.toString());
-    hotelsUrl.searchParams.set('longitude', lon.toString());
-    hotelsUrl.searchParams.set('radius', '20');
-    hotelsUrl.searchParams.set('radiusUnit', 'KM');
-    hotelsUrl.searchParams.set('ratings', starRatings.join(','));
-    hotelsUrl.searchParams.set('hotelSource', 'ALL');
-
-    const hotelsResponse = await fetch(hotelsUrl.toString(), {
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
-
-    if (!hotelsResponse.ok) {
-      console.error('Amadeus hotels list failed:', await hotelsResponse.text());
-      return [];
-    }
-
-    const hotelsData = await hotelsResponse.json();
-    const hotelIds = (hotelsData.data || []).slice(0, 20).map((h: { hotelId: string }) => h.hotelId);
-
-    if (hotelIds.length === 0) {
-      console.log('No hotels found in Amadeus for this location');
-      return [];
-    }
-
-    // Step 2: Get offers for these hotels
-    const offersUrl = new URL(`${AMADEUS_BASE_URL}/v3/shopping/hotel-offers`);
-    offersUrl.searchParams.set('hotelIds', hotelIds.join(','));
-    offersUrl.searchParams.set('checkInDate', checkIn);
-    offersUrl.searchParams.set('checkOutDate', checkOut);
-    offersUrl.searchParams.set('adults', adults.toString());
-    offersUrl.searchParams.set('currency', 'USD');
-
-    const offersResponse = await fetch(offersUrl.toString(), {
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
-
-    if (!offersResponse.ok) {
-      console.error('Amadeus offers failed:', await offersResponse.text());
-      return [];
-    }
-
-    const offersData = await offersResponse.json();
-    return offersData.data || [];
-  } catch (error) {
-    console.error('Amadeus search error:', error);
-    return [];
-  }
+interface BookingSearchResponse {
+  data: BookingAccommodation[];
+  next_page?: string;
 }
-
-// ===========================================
-// AI HOTEL RECOMMENDATIONS
-// ===========================================
-
-interface AIHotelRecommendation {
-  name: string;
-  starRating: number;
-  estimatedPrice: number;
-  description: string;
-}
-
-async function getAIHotelRecommendations(
-  city: string,
-  country: string,
-  tier: Tier,
-  checkIn: string,
-  checkOut: string
-): Promise<AIHotelRecommendation[]> {
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  if (!anthropicKey) {
-    console.error('No Anthropic API key for AI hotel recommendations');
-    return [];
-  }
-
-  const config = TIER_CONFIG[tier];
-  const nights = Math.ceil(
-    (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  try {
-    const anthropic = new Anthropic({ apiKey: anthropicKey });
-
-    const message = await anthropic.messages.create({
-      model: 'claude-3-haiku-20240307',
-      max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: `You are a hotel expert. Recommend 3 REAL hotels in ${city}, ${country} for a ${tier} tier traveler.
-
-Requirements:
-- Star rating: ${config.hotelStars.join(' or ')}-star hotels
-- ${tier === 'base' ? 'Budget-friendly, good value' : tier === 'premium' ? 'Great quality-to-price ratio' : 'Luxury experience, top-rated'}
-- Must be real, bookable hotels that exist on Booking.com
-
-Return ONLY valid JSON array (no markdown):
-[
-  {
-    "name": "Exact Hotel Name",
-    "starRating": ${config.hotelStars[0]},
-    "estimatedPrice": ${tier === 'base' ? 100 * nights : tier === 'premium' ? 200 * nights : 400 * nights},
-    "description": "Brief description"
-  }
-]`,
-        },
-      ],
-    });
-
-    const content = message.content[0];
-    if (content.type !== 'text') return [];
-
-    // Parse JSON from response
-    const jsonMatch = content.text.match(/\[[\s\S]*\]/);
-    if (!jsonMatch) return [];
-
-    return JSON.parse(jsonMatch[0]);
-  } catch (error) {
-    console.error('AI hotel recommendation error:', error);
-    return [];
-  }
-}
-
-// ===========================================
-// MAIN SEARCH FUNCTION
-// ===========================================
 
 /**
- * Search for hotels using Amadeus API with AI fallback
+ * Get Booking.com city ID from coordinates or city name
+ */
+async function getCityId(
+  lat: number,
+  lon: number
+): Promise<number | null> {
+  if (!BOOKING_API_KEY) return null;
+
+  try {
+    const response = await fetch(`${BASE_URL}/common/locations/cities`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        coordinates: { latitude: lat, longitude: lon },
+        languages: ['en-gb'],
+      }),
+    });
+
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    return data.data?.[0]?.id || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Search for hotels
  */
 export async function searchHotels(
   search: HotelSearch,
   lat: number,
   lon: number
-): Promise<HotelOffer[]> {
-  // Try Amadeus first
-  const amadeusOffers = await searchAmadeusHotels(
-    lat,
-    lon,
-    search.checkIn,
-    search.checkOut,
-    search.guests,
-    search.starRating
-  );
-
-  if (amadeusOffers.length > 0) {
-    // Transform Amadeus results
-    return amadeusOffers
-      .map((offer) => transformAmadeusOffer(offer, search.city, search.checkIn, search.checkOut))
-      .filter((h): h is HotelOffer => h !== null);
+): Promise<BookingAccommodation[]> {
+  if (!BOOKING_API_KEY) {
+    console.warn('No Booking.com API key - returning mock data');
+    return getMockHotels(search);
   }
 
-  // Fallback to AI recommendations
-  console.log(`No Amadeus results for ${search.city}, using AI recommendations`);
+  // Try to get city ID first
+  const cityId = await getCityId(lat, lon);
 
-  // Determine tier from star ratings
-  const tier: Tier = search.starRating.includes(5) ? 'luxe'
-    : search.starRating.includes(4) ? 'premium'
-    : 'base';
+  const payload: BookingSearchPayload = {
+    booker: {
+      country: 'us',
+      platform: 'desktop',
+    },
+    checkin: search.checkIn,
+    checkout: search.checkOut,
+    guests: {
+      number_of_adults: search.guests,
+      number_of_rooms: search.rooms,
+    },
+    filters: {
+      class: search.starRating,
+      review_score: {
+        min: search.minReviewScore,
+      },
+    },
+    extras: ['products', 'photos', 'facilities'],
+  };
 
-  const aiRecommendations = await getAIHotelRecommendations(
-    search.city,
-    'destination', // Country will be looked up
-    tier,
-    search.checkIn,
-    search.checkOut
-  );
+  // Use city ID if available, otherwise coordinates
+  if (cityId) {
+    payload.city = cityId;
+  } else {
+    payload.coordinates = {
+      latitude: lat,
+      longitude: lon,
+      radius: 15, // km
+    };
+  }
 
-  return aiRecommendations.map((rec, i) => ({
-    id: `ai_${i}_${Date.now()}`,
-    name: rec.name,
-    starRating: rec.starRating,
-    reviewScore: 85 + Math.floor(Math.random() * 10), // Estimated
-    reviewCount: 0,
-    price: rec.estimatedPrice,
-    currency: 'USD',
-    address: `${search.city}`,
-    distanceFromCenter: 'Central location',
-    photos: [],
-    amenities: ['Free WiFi', 'Air conditioning'],
-    roomType: tier === 'luxe' ? 'Deluxe Suite' : tier === 'premium' ? 'Superior Room' : 'Standard Room',
-    freeCancellation: tier !== 'base',
-    breakfastIncluded: tier === 'luxe',
-    url: generateBookingLink(rec.name, search.city, search.checkIn, search.checkOut),
-  }));
+  try {
+    const response = await fetch(`${BASE_URL}/accommodations/search`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Booking.com search error:', error);
+      return getMockHotels(search);
+    }
+
+    const data: BookingSearchResponse = await response.json();
+    return data.data || [];
+  } catch (error) {
+    console.error('Booking.com fetch error:', error);
+    return getMockHotels(search);
+  }
 }
 
-function transformAmadeusOffer(
-  offer: AmadeusHotelOffer,
-  city: string,
-  checkIn: string,
-  checkOut: string
+/**
+ * Transform Booking.com accommodation to our HotelOffer format
+ */
+export function transformBookingHotel(
+  hotel: BookingAccommodation
 ): HotelOffer | null {
-  const firstOffer = offer.offers?.[0];
-  if (!firstOffer) return null;
+  const product = hotel.products?.[0];
+  if (!product) return null;
 
-  const price = parseFloat(firstOffer.price.total);
+  const price = parseFloat(product.price.total);
   if (isNaN(price)) return null;
 
   return {
-    id: offer.hotel.hotelId,
-    name: offer.hotel.name,
-    starRating: offer.hotel.rating || 4,
-    reviewScore: 80 + Math.floor(Math.random() * 15), // Amadeus doesn't provide this
-    reviewCount: 0,
+    id: hotel.id.toString(),
+    name: hotel.name,
+    starRating: hotel.class || 3,
+    reviewScore: hotel.review_score || 0,
+    reviewCount: hotel.number_of_reviews || 0,
     price,
-    currency: firstOffer.price.currency,
-    address: offer.hotel.address?.lines?.join(', ') || city,
-    distanceFromCenter: offer.hotel.distance
-      ? `${offer.hotel.distance.value} ${offer.hotel.distance.unit} from center`
+    currency: product.price.currency,
+    address: hotel.address,
+    distanceFromCenter: hotel.distance_to_city_centre
+      ? `${hotel.distance_to_city_centre.value} ${hotel.distance_to_city_centre.unit} from center`
       : '',
-    photos: [],
-    amenities: [],
-    roomType: firstOffer.room?.type || 'Standard Room',
-    freeCancellation: firstOffer.policies?.cancellations?.[0]?.type === 'FREE_CANCELLATION',
-    breakfastIncluded: false,
-    url: generateBookingLink(offer.hotel.name, city, checkIn, checkOut),
+    photos: hotel.photos?.map((p) => p.url) || [],
+    amenities: hotel.facilities?.map((f) => f.name) || [],
+    roomType: product.room_name,
+    freeCancellation: product.cancellation?.type === 'free_cancellation',
+    breakfastIncluded: product.meal_plan?.toLowerCase().includes('breakfast') || false,
+    url: hotel.url,
   };
 }
 
 /**
- * Transform for compatibility (used by search route)
+ * Search and select best hotel for a tier
  */
-export function transformBookingHotel(hotel: HotelOffer): HotelOffer {
-  return hotel; // Already in correct format
+export async function getBestHotelForTier(
+  city: string,
+  lat: number,
+  lon: number,
+  checkIn: string,
+  checkOut: string,
+  tier: Tier,
+  costIndex: number = 3
+): Promise<HotelOffer | null> {
+  const config = TIER_CONFIG[tier];
+
+  const hotels = await searchHotels(
+    {
+      city,
+      checkIn,
+      checkOut,
+      guests: 2,
+      rooms: 1,
+      starRating: config.hotelStars,
+      minReviewScore: 80, // 8.0+
+    },
+    lat,
+    lon
+  );
+
+  if (hotels.length === 0) return null;
+
+  // Transform all hotels
+  const offers = hotels
+    .map(transformBookingHotel)
+    .filter((h): h is HotelOffer => h !== null);
+
+  if (offers.length === 0) return null;
+
+  // Sort based on tier criteria
+  let sortedOffers: HotelOffer[];
+
+  switch (tier) {
+    case 'base':
+      // For base: optimize for cost, considering destination cost of living
+      sortedOffers = [...offers].sort((a, b) => {
+        // Weight price by cost index (cheaper destinations get preference)
+        const aScore = a.price * (1 + (costIndex - 1) * 0.1);
+        const bScore = b.price * (1 + (costIndex - 1) * 0.1);
+        return aScore - bScore;
+      });
+      break;
+
+    case 'premium':
+      // For premium: balance between quality and cost
+      sortedOffers = [...offers].sort((a, b) => {
+        // Score = (reviewScore / 10) / (price / 100)
+        // Higher review score and lower price = better
+        const aScore = (a.reviewScore / 10) / (a.price / 100);
+        const bScore = (b.reviewScore / 10) / (b.price / 100);
+        return bScore - aScore; // Descending
+      });
+      break;
+
+    case 'luxe':
+      // For luxe: prioritize top reviews and amenities
+      sortedOffers = [...offers].sort((a, b) => {
+        // Check for preferred luxury brands
+        const aIsLuxuryBrand = config.hotelBrands?.some((brand) =>
+          a.name.toLowerCase().includes(brand.toLowerCase())
+        );
+        const bIsLuxuryBrand = config.hotelBrands?.some((brand) =>
+          b.name.toLowerCase().includes(brand.toLowerCase())
+        );
+
+        if (aIsLuxuryBrand && !bIsLuxuryBrand) return -1;
+        if (!aIsLuxuryBrand && bIsLuxuryBrand) return 1;
+
+        // Then by review score (descending)
+        if (b.reviewScore !== a.reviewScore) {
+          return b.reviewScore - a.reviewScore;
+        }
+
+        // Then by review count (more reviews = more trustworthy)
+        return b.reviewCount - a.reviewCount;
+      });
+      break;
+
+    default:
+      sortedOffers = offers;
+  }
+
+  return sortedOffers[0];
 }
 
 // ===========================================
-// ORDER CREATION (unchanged)
+// ORDER CREATION
 // ===========================================
 
 /**
  * Generate Booking.com deep link for checkout
+ * Note: Full order creation requires Managed Affiliate status
  */
 export function generateBookingDeepLink(
-  hotelName: string,
-  city: string,
+  hotelId: string,
   checkIn: string,
   checkOut: string,
-  guests: number = 2
+  guests: number = 2,
+  rooms: number = 1
 ): string {
-  return generateBookingLink(hotelName, city, checkIn, checkOut, guests);
+  const params = new URLSearchParams({
+    aid: BOOKING_AFFILIATE_ID || '304142', // Fallback to generic
+    checkin: checkIn,
+    checkout: checkOut,
+    group_adults: guests.toString(),
+    no_rooms: rooms.toString(),
+    selected_currency: 'USD',
+  });
+
+  return `https://www.booking.com/hotel/searchresults.html?dest_id=${hotelId}&${params.toString()}`;
 }
 
 /**
- * Create hotel order - returns AWIN link for Booking.com
+ * Create hotel order (for Managed Affiliate Partners)
+ * Falls back to deep link if not authorized
  */
 export async function createHotelOrder(
   hotelId: string,
@@ -375,10 +361,174 @@ export async function createHotelOrder(
   checkoutUrl?: string;
   error?: string;
 }> {
-  // For now, always return the AWIN deep link
-  // Real booking happens on Booking.com
-  return {
-    success: true,
-    checkoutUrl: generateBookingDeepLink('Hotel', 'City', checkIn, checkOut),
-  };
+  if (!BOOKING_API_KEY) {
+    // Return deep link for checkout
+    return {
+      success: true,
+      checkoutUrl: generateBookingDeepLink(hotelId, checkIn, checkOut),
+    };
+  }
+
+  // Try to create order via API
+  try {
+    // First, preview the order
+    const previewResponse = await fetch(`${BASE_URL}/orders/preview`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        booker: {
+          country: 'us',
+          platform: 'desktop',
+        },
+        currency: 'USD',
+        accommodation: {
+          id: parseInt(hotelId),
+          checkin: checkIn,
+          checkout: checkOut,
+          products: [{ id: productId }],
+        },
+      }),
+    });
+
+    if (!previewResponse.ok) {
+      // Fall back to deep link
+      return {
+        success: true,
+        checkoutUrl: generateBookingDeepLink(hotelId, checkIn, checkOut),
+      };
+    }
+
+    const preview = await previewResponse.json();
+    const orderToken = preview.data.order_token;
+
+    // Create the order
+    const orderResponse = await fetch(`${BASE_URL}/orders/create`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        order_token: orderToken,
+        booker: {
+          email: guest.email,
+          name: {
+            first_name: guest.firstName,
+            last_name: guest.lastName,
+          },
+          telephone: guest.phone,
+          country: 'us',
+          language: 'en-gb',
+        },
+        accommodation: {
+          products: [
+            {
+              id: productId,
+              guests: [
+                {
+                  name: `${guest.firstName} ${guest.lastName}`,
+                  email: guest.email,
+                },
+              ],
+            },
+          ],
+        },
+        payment: {
+          timing: 'pay_at_the_property', // Or 'pay_online_now' with card
+        },
+      }),
+    });
+
+    if (!orderResponse.ok) {
+      return {
+        success: true,
+        checkoutUrl: generateBookingDeepLink(hotelId, checkIn, checkOut),
+      };
+    }
+
+    const order = await orderResponse.json();
+    return {
+      success: true,
+      bookingRef: order.data.id,
+    };
+  } catch (error) {
+    console.error('Booking.com order error:', error);
+    return {
+      success: true,
+      checkoutUrl: generateBookingDeepLink(hotelId, checkIn, checkOut),
+    };
+  }
+}
+
+// ===========================================
+// MOCK DATA
+// ===========================================
+
+function getMockHotels(search: HotelSearch): BookingAccommodation[] {
+  const hotelTemplates = [
+    { name: 'Grand Plaza Hotel', class: 5, basePrice: 350 },
+    { name: 'The Ritz Downtown', class: 5, basePrice: 450 },
+    { name: 'Harbor View Suites', class: 4, basePrice: 220 },
+    { name: 'City Center Inn', class: 4, basePrice: 180 },
+    { name: 'Comfort Stay Hotel', class: 3, basePrice: 120 },
+    { name: 'Budget Express', class: 3, basePrice: 95 },
+  ];
+
+  // Filter by star rating
+  const filtered = hotelTemplates.filter((h) =>
+    search.starRating.includes(h.class)
+  );
+
+  // Calculate nights
+  const checkIn = new Date(search.checkIn);
+  const checkOut = new Date(search.checkOut);
+  const nights = Math.ceil(
+    (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  return filtered.map((template, i) => {
+    const variance = 0.8 + Math.random() * 0.4;
+    const nightlyRate = Math.round(template.basePrice * variance);
+    const totalPrice = nightlyRate * nights;
+
+    return {
+      id: 1000000 + i,
+      name: template.name,
+      class: template.class,
+      review_score: 80 + Math.floor(Math.random() * 15), // 80-95
+      number_of_reviews: 100 + Math.floor(Math.random() * 900),
+      address: `${100 + i * 10} Main Street`,
+      city: search.city,
+      country: 'USA',
+      currency: 'USD',
+      latitude: 0,
+      longitude: 0,
+      url: `https://www.booking.com/hotel/${search.city.toLowerCase().replace(' ', '-')}/${template.name.toLowerCase().replace(/ /g, '-')}.html`,
+      deep_link_url: '',
+      photos: [
+        { url: `https://picsum.photos/seed/${i}/400/300` },
+      ],
+      products: [
+        {
+          id: `prod_${i}`,
+          price: {
+            total: totalPrice.toString(),
+            currency: 'USD',
+          },
+          room_name: template.class >= 4 ? 'Deluxe King Room' : 'Standard Room',
+          meal_plan: template.class >= 4 ? 'Breakfast included' : undefined,
+          cancellation: {
+            type: template.class >= 4 ? 'free_cancellation' : 'non_refundable',
+          },
+        },
+      ],
+      facilities: [
+        { name: 'Free WiFi' },
+        { name: 'Air conditioning' },
+        ...(template.class >= 4 ? [{ name: 'Fitness center' }, { name: 'Pool' }] : []),
+        ...(template.class >= 5 ? [{ name: 'Spa' }, { name: 'Concierge' }] : []),
+      ],
+      distance_to_city_centre: {
+        value: 0.5 + Math.random() * 2,
+        unit: 'km',
+      },
+    };
+  });
 }

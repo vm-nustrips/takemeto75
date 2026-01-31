@@ -10,10 +10,17 @@ const MARKUPS = {
   luxe: parseInt(process.env.FLIGHT_MARKUP_LUXE || '7500'),
 };
 
-function getHeaders(): Record<string, string> {
+interface DuffelHeaders {
+  'Authorization': string;
+  'Duffel-Version': string;
+  'Content-Type': string;
+  'Accept-Encoding': string;
+}
+
+function getHeaders(): DuffelHeaders {
   return {
     'Authorization': `Bearer ${DUFFEL_API_TOKEN}`,
-    'Duffel-Version': 'v2',
+    'Duffel-Version': '2024-02-28',
     'Content-Type': 'application/json',
     'Accept-Encoding': 'gzip',
   };
