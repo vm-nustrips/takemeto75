@@ -1,2 +1,31 @@
-.vercel
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+
+# Environment files
+.env
+.env.*
 .env*.local
+
+# Vercel
+.vercel/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups and archives (may contain secrets)
+*.zip
+*.tar.gz
+*_backup_*
+
+# Debug
+npm-debug.log*
