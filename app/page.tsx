@@ -375,7 +375,7 @@ export default function Home() {
   const fetchDestinations = async (origin: string) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/destinations?origin=${origin}`);
+      const response = await fetch(`/api/discover?origin=${origin}`);
       const data = await response.json();
       setDestinations(data.destinations);
     } catch (error) {

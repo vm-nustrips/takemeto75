@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { destinations } from '@/lib/destinations';
+import { destinations } from '@/lib/destination-catalog';
 import { getWeatherForecast, countFullyCloudyDays } from '@/lib/weather';
 
 // Force dynamic rendering

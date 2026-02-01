@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { destinations } from '@/lib/destinations';
+import { destinations } from '@/lib/destination-catalog';
 import { searchFlights } from '@/lib/duffel';
 import { searchHotels } from '@/lib/hotels';
 import { selectBestPackage } from '@/lib/claude-selector';

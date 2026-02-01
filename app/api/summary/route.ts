@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { destinations } from '@/lib/destinations';
+import { destinations } from '@/lib/destination-catalog';
 import Anthropic from '@anthropic-ai/sdk';
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
