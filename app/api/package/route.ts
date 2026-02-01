@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     // Search flights and hotels in parallel
     const [allFlights, allHotels] = await Promise.all([
       searchFlights(origin, destination.airportCode, departureDate, returnDate, 1, tier),
-      searchHotels(destination.lat, destination.lon, departureDate, returnDate),
+      searchHotels(destination.lat, destination.lon, departureDate, returnDate, tier),
     ]);
 
     if (allFlights.length === 0 || allHotels.length === 0) {

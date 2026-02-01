@@ -50,6 +50,14 @@ export interface HotelOffer {
   breakfastIncluded: boolean;
   photo: string;
   isLuxuryBrand: boolean;
+  // Amadeus-specific fields
+  amadeusHotelId?: string;
+  amadeusOfferId?: string;
+  boardType?: string; // ROOM_ONLY, BREAKFAST, HALF_BOARD, etc.
+  // Booking.com review data (from web search)
+  bookingRating?: number; // 9.2 (scale 1-10)
+  bookingReviewCount?: number;
+  reviewHighlights?: string; // "Great location, excellent service"
 }
 
 export interface TripPackage {
