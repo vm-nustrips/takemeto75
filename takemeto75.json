@@ -5,13 +5,15 @@
     "description": "AI-powered travel booking platform that finds destinations with perfect 75°F weather for quick, convenient getaways",
     "live_url": "https://takemeto75.vercel.app",
     "github_repo": "https://github.com/vm-nustrips/takemeto75.git",
-    "current_version": "v0.1"
+    "current_version": "v2.0"
   },
 
   "versions": {
-    "v0.1": {
-      "status": "BASELINE - Live functional build",
-      "description": "First fully working deployment with core features",
+    "v1.0": {
+      "status": "ARCHIVED",
+      "date": "2025-12-26",
+      "backup": "takemeto75_backup_20251226.zip",
+      "description": "Original baseline build",
       "features": [
         "6 destinations with weather filtering",
         "3-tier system (Base/Premium/Luxe)",
@@ -21,14 +23,17 @@
         "Geolocation detection"
       ]
     },
-    "v0.3": {
-      "status": "Planned",
-      "description": "Enhanced tier logic and global expansion",
+    "v2.0": {
+      "status": "CURRENT - Live",
+      "date": "2026-02-01",
+      "description": "Restructured codebase + security hardening",
       "features": [
-        "Tier-based cabin class logic (base=economy, premium=economy+premium_economy, luxe=business+premium)",
-        "Distance scoring algorithms",
-        "48→98 international airports",
-        "Nonstop flight prioritization"
+        "Renamed lib/destinations.ts → lib/destination-catalog.ts",
+        "Renamed /api/destinations → /api/discover",
+        "All API keys in Vercel env vars (Dev/Preview/Production)",
+        "Removed hardcoded secrets from repo",
+        "Comprehensive .gitignore",
+        "22 destinations, 100+ origin airports"
       ]
     }
   },
