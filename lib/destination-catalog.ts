@@ -1,158 +1,123 @@
 import { Destination } from './types';
 
 export const destinations: Destination[] = [
-  // Low cost of living - good for Base tier
-  { 
-    id: 'cancun', city: 'Cancún', country: 'Mexico', lat: 21.1619, lon: -86.8515, airportCode: 'CUN', 
-    description: 'White sand beaches and turquoise waters', 
-    image: 'https://picsum.photos/seed/cancun/800/600', 
-    costOfLiving: 'low',
-    highlights: ['🏖️ Hotel Zone has 14 miles of beaches', '🌮 $2 street tacos are incredible', '🚌 Easy day trips to Tulum & cenotes', '💵 USD widely accepted']
-  },
-  { 
-    id: 'cartagena', city: 'Cartagena', country: 'Colombia', lat: 10.3910, lon: -75.4794, airportCode: 'CTG', 
-    description: 'Colonial walled city on the Caribbean', 
-    image: 'https://picsum.photos/seed/cartagena/800/600', 
-    costOfLiving: 'low',
-    highlights: ['🏰 UNESCO Old Town is walkable', '🍹 Best ceviche in South America', '⛵ Boat trips to Rosario Islands', '💃 Salsa bars everywhere']
-  },
-  { 
-    id: 'phuket', city: 'Phuket', country: 'Thailand', lat: 7.8804, lon: 98.3923, airportCode: 'HKT', 
-    description: 'Thai beaches and island hopping', 
-    image: 'https://picsum.photos/seed/phuket/800/600', 
-    costOfLiving: 'low',
-    highlights: ['🛥️ Phi Phi Islands day trip is a must', '💆 $10 Thai massages on the beach', '🍜 Best pad thai costs $2', '🌅 Kata Beach for sunsets']
-  },
-  { 
-    id: 'bali', city: 'Bali', country: 'Indonesia', lat: -8.6500, lon: 115.2167, airportCode: 'DPS', 
-    description: 'Temples, rice terraces, and surf', 
-    image: 'https://picsum.photos/seed/bali/800/600', 
-    costOfLiving: 'low',
-    highlights: ['🏄 Beginner surfing in Kuta', '🌾 Tegallalang rice terraces', '🐒 Ubud monkey forest', '💆 World-class spas for $30']
-  },
-  { 
-    id: 'lisbon', city: 'Lisbon', country: 'Portugal', lat: 38.7223, lon: -9.1393, airportCode: 'LIS', 
-    description: 'Coastal hills and pastel de nata', 
-    image: 'https://picsum.photos/seed/lisbon/800/600', 
-    costOfLiving: 'low',
-    highlights: ['🚃 Iconic Tram 28 through old town', '🥐 Pastéis de Belém is the OG', '🍷 €5 wine everywhere', '🏖️ 30min to beach towns']
-  },
-  { 
-    id: 'marrakech', city: 'Marrakech', country: 'Morocco', lat: 31.6295, lon: -7.9811, airportCode: 'RAK', 
-    description: 'Souks, riads, and vibrant culture', 
-    image: 'https://picsum.photos/seed/marrakech/800/600', 
-    costOfLiving: 'low',
-    highlights: ['🏨 Stay in a riad (traditional house)', '🛍️ Haggle in the souks - start at 30%', '🍵 Mint tea is always free', '🏜️ Desert trips available']
-  },
-  { 
-    id: 'costa-rica', city: 'San José', country: 'Costa Rica', lat: 9.9281, lon: -84.0907, airportCode: 'SJO', 
-    description: 'Rainforests, beaches, and wildlife', 
-    image: 'https://picsum.photos/seed/costarica/800/600', 
-    costOfLiving: 'low',
-    highlights: ['🦥 Sloths everywhere in Manuel Antonio', '🌋 Arenal volcano hot springs', '🏄 Both Pacific & Caribbean coasts', '🌿 25% of country is national parks']
-  },
-  
-  // Medium cost of living - good for Premium tier
-  { 
-    id: 'san-juan', city: 'San Juan', country: 'Puerto Rico', lat: 18.4655, lon: -66.1057, airportCode: 'SJU', 
-    description: 'Colonial charm meets Caribbean vibes', 
-    image: 'https://picsum.photos/seed/sanjuan/800/600', 
-    costOfLiving: 'medium',
-    highlights: ['🇺🇸 No passport needed (US territory)', '🏰 Old San Juan is stunning at night', '🍹 Birthplace of the piña colada', '🏖️ Condado Beach walkable from downtown']
-  },
-  { 
-    id: 'barcelona', city: 'Barcelona', country: 'Spain', lat: 41.3874, lon: 2.1686, airportCode: 'BCN', 
-    description: 'Gaudí, tapas, and Mediterranean beaches', 
-    image: 'https://picsum.photos/seed/barcelona/800/600', 
-    costOfLiving: 'medium',
-    highlights: ['⛪ Book Sagrada Familia in advance', '🍷 €1 vermut at local bodegas', '🏖️ Barceloneta Beach is central', '🌃 Dinner starts at 9pm']
-  },
-  { 
-    id: 'athens', city: 'Athens', country: 'Greece', lat: 37.9838, lon: 23.7275, airportCode: 'ATH', 
-    description: 'Ancient history meets modern energy', 
-    image: 'https://picsum.photos/seed/athens/800/600', 
-    costOfLiving: 'medium',
-    highlights: ['🏛️ Acropolis best at sunrise', '🥙 €3 gyros in Monastiraki', '⛴️ Easy ferries to islands', '🍸 Rooftop bars with Parthenon views']
-  },
-  { 
-    id: 'san-diego', city: 'San Diego', country: 'USA', lat: 32.7157, lon: -117.1611, airportCode: 'SAN', 
-    description: 'Perfect weather and laid-back vibes', 
-    image: 'https://picsum.photos/seed/sandiego/800/600', 
-    costOfLiving: 'medium',
-    highlights: ['🌴 70°F basically year-round', '🌮 Best fish tacos in the US', '🦭 La Jolla seals are free to visit', '🍺 100+ craft breweries']
-  },
-  { 
-    id: 'nassau', city: 'Nassau', country: 'Bahamas', lat: 25.0443, lon: -77.3504, airportCode: 'NAS', 
-    description: 'Island paradise with crystal clear waters', 
-    image: 'https://picsum.photos/seed/nassau/800/600', 
-    costOfLiving: 'medium',
-    highlights: ['🐷 Swimming pigs day trip', '🏝️ Paradise Island is connected by bridge', '🤿 Best snorkeling in the Caribbean', '🛳️ Can feel touristy on cruise days']
-  },
-  { 
-    id: 'aruba', city: 'Oranjestad', country: 'Aruba', lat: 12.5211, lon: -70.0345, airportCode: 'AUA', 
-    description: 'One happy island with perfect weather', 
-    image: 'https://picsum.photos/seed/aruba/800/600', 
-    costOfLiving: 'medium',
-    highlights: ['☀️ Outside hurricane belt - always sunny', '🏖️ Eagle Beach ranked top 10 world', '🚗 Rent a UTV for the wild side', '💵 USD accepted everywhere']
-  },
-  { 
-    id: 'rio', city: 'Rio de Janeiro', country: 'Brazil', lat: -22.9068, lon: -43.1729, airportCode: 'GIG', 
-    description: 'Beaches, mountains, and samba', 
-    image: 'https://picsum.photos/seed/rio/800/600', 
-    costOfLiving: 'medium',
-    highlights: ['🗻 Christ the Redeemer sunrise is magic', '🏖️ Ipanema > Copacabana (less crowded)', '🍹 Caipirinhas on the beach', '⚠️ Leave valuables at hotel']
-  },
-  { 
-    id: 'cape-town', city: 'Cape Town', country: 'South Africa', lat: -33.9249, lon: 18.4241, airportCode: 'CPT', 
-    description: 'Table Mountain and coastal beauty', 
-    image: 'https://picsum.photos/seed/capetown/800/600', 
-    costOfLiving: 'medium',
-    highlights: ['⛰️ Table Mountain cable car is worth it', '🍷 World-class wine for $5/bottle', '🐧 Boulders Beach penguins', '💰 Great exchange rate for USD']
-  },
-  
-  // High cost of living - good for Luxe tier  
-  { 
-    id: 'miami', city: 'Miami', country: 'USA', lat: 25.7617, lon: -80.1918, airportCode: 'MIA', 
-    description: 'Art deco, beaches, and nightlife', 
-    image: 'https://picsum.photos/seed/miami/800/600', 
-    costOfLiving: 'high',
-    highlights: ['🌴 South Beach Art Deco district', '🍽️ Wynwood for food halls & art', '🚤 Day trip to Key Biscayne', '🎉 Nightlife starts at midnight']
-  },
-  { 
-    id: 'honolulu', city: 'Honolulu', country: 'USA', lat: 21.3069, lon: -157.8583, airportCode: 'HNL', 
-    description: 'Tropical paradise in the Pacific', 
-    image: 'https://picsum.photos/seed/honolulu/800/600', 
-    costOfLiving: 'high',
-    highlights: ['🌅 Diamond Head sunrise hike', '🏄 Learn to surf at Waikiki', '🍲 Poke bowls everywhere', '🚗 Rent a car to see North Shore']
-  },
-  { 
-    id: 'nice', city: 'Nice', country: 'France', lat: 43.7102, lon: 7.2620, airportCode: 'NCE', 
-    description: 'French Riviera glamour', 
-    image: 'https://picsum.photos/seed/nice/800/600', 
-    costOfLiving: 'high',
-    highlights: ['🏖️ Promenade des Anglais stroll', '🚂 Train to Monaco in 20min', '🥐 Best socca (chickpea pancake)', '🎨 Matisse Museum is free']
-  },
-  { 
-    id: 'dubai', city: 'Dubai', country: 'UAE', lat: 25.2048, lon: 55.2708, airportCode: 'DXB', 
-    description: 'Futuristic skyline and desert adventures', 
-    image: 'https://picsum.photos/seed/dubai/800/600', 
-    costOfLiving: 'high',
-    highlights: ['🏙️ Burj Khalifa sunset tickets sell fast', '🏜️ Desert safari worth it', '🛍️ Dubai Mall is overwhelming', '🍽️ Friday brunch is a thing']
-  },
-  { 
-    id: 'sydney', city: 'Sydney', country: 'Australia', lat: -33.8688, lon: 151.2093, airportCode: 'SYD', 
-    description: 'Harbour views and beach culture', 
-    image: 'https://picsum.photos/seed/sydney/800/600', 
-    costOfLiving: 'high',
-    highlights: ['🌉 Walk across Harbour Bridge', '🏖️ Bondi to Coogee coastal walk', '☕ Best coffee culture outside Italy', '🦘 Blue Mountains day trip']
-  },
-  { 
-    id: 'key-west', city: 'Key West', country: 'USA', lat: 24.5551, lon: -81.7800, airportCode: 'EYW', 
-    description: 'Southernmost point with endless sunsets', 
-    image: 'https://picsum.photos/seed/keywest/800/600', 
-    costOfLiving: 'high',
-    highlights: ['🌅 Mallory Square sunset ritual', '🚴 Rent a bike - island is tiny', '🥧 Key lime pie is mandatory', '🐓 Chickens roam free everywhere']
-  },
+  // CARIBBEAN & CENTRAL AMERICA
+  { id: 'cancun', city: 'Cancun', country: 'Mexico', lat: 21.1619, lon: -86.8515, airportCode: 'CUN', description: 'White sand beaches and turquoise waters', image: 'https://picsum.photos/seed/cancun/800/600', costOfLiving: 'low', highlights: ['🏖️ 14 miles of beaches', '🌮 $2 street tacos', '🚌 Day trips to Tulum', '💵 USD accepted'] },
+  { id: 'san-juan', city: 'San Juan', country: 'Puerto Rico', lat: 18.4655, lon: -66.1057, airportCode: 'SJU', description: 'Colonial charm meets Caribbean vibes', image: 'https://picsum.photos/seed/sanjuan/800/600', costOfLiving: 'medium', highlights: ['🇺🇸 No passport needed', '🏰 Old San Juan', '🍹 Pina colada birthplace', '🏖️ Condado Beach'] },
+  { id: 'nassau', city: 'Nassau', country: 'Bahamas', lat: 25.0443, lon: -77.3504, airportCode: 'NAS', description: 'Island paradise with crystal clear waters', image: 'https://picsum.photos/seed/nassau/800/600', costOfLiving: 'medium', highlights: ['🐷 Swimming pigs', '🏝️ Paradise Island', '🤿 Best snorkeling', '🛳️ Avoid cruise days'] },
+  { id: 'aruba', city: 'Oranjestad', country: 'Aruba', lat: 12.5211, lon: -70.0345, airportCode: 'AUA', description: 'One happy island with perfect weather', image: 'https://picsum.photos/seed/aruba/800/600', costOfLiving: 'medium', highlights: ['☀️ Outside hurricane belt', '🏖️ Eagle Beach top 10', '🚗 Rent a UTV', '💵 USD accepted'] },
+  { id: 'costa-rica', city: 'San Jose', country: 'Costa Rica', lat: 9.9281, lon: -84.0907, airportCode: 'SJO', description: 'Rainforests, beaches, and wildlife', image: 'https://picsum.photos/seed/costarica/800/600', costOfLiving: 'low', highlights: ['🦥 Sloths everywhere', '🌋 Arenal hot springs', '🏄 Two coasts', '🌿 25% national parks'] },
+  { id: 'cartagena', city: 'Cartagena', country: 'Colombia', lat: 10.3910, lon: -75.4794, airportCode: 'CTG', description: 'Colonial walled city on the Caribbean', image: 'https://picsum.photos/seed/cartagena/800/600', costOfLiving: 'low', highlights: ['🏰 UNESCO Old Town', '🍹 Best ceviche', '⛵ Rosario Islands', '💃 Salsa bars'] },
+  { id: 'punta-cana', city: 'Punta Cana', country: 'Dominican Republic', lat: 18.5601, lon: -68.3725, airportCode: 'PUJ', description: 'All-inclusive paradise', image: 'https://picsum.photos/seed/puntacana/800/600', costOfLiving: 'low', highlights: ['🏖️ 30km white sand', '🏌️ World-class golf', '🎉 Party scene', '🤿 Great diving'] },
+  { id: 'jamaica', city: 'Montego Bay', country: 'Jamaica', lat: 18.4762, lon: -77.8939, airportCode: 'MBJ', description: 'Reggae rhythms and tropical vibes', image: 'https://picsum.photos/seed/montegobay/800/600', costOfLiving: 'medium', highlights: ['🎵 Live reggae', '🏖️ Doctors Cave Beach', '🌊 Dunns River Falls', '🍗 Jerk chicken'] },
+  { id: 'curacao', city: 'Willemstad', country: 'Curacao', lat: 12.1696, lon: -68.9900, airportCode: 'CUR', description: 'Colorful Dutch Caribbean charm', image: 'https://picsum.photos/seed/curacao/800/600', costOfLiving: 'medium', highlights: ['🎨 Colorful Handelskade', '🤿 Shore diving', '🏖️ Hidden coves', '🍹 Blue curacao'] },
+  { id: 'st-lucia', city: 'Castries', country: 'St. Lucia', lat: 14.0101, lon: -60.9875, airportCode: 'UVF', description: 'Dramatic pitons and lush rainforest', image: 'https://picsum.photos/seed/stlucia/800/600', costOfLiving: 'high', highlights: ['⛰️ Iconic Pitons', '♨️ Volcanic mud baths', '🌴 Rainforest zip-lines', '💑 Honeymoon spot'] },
+  { id: 'barbados', city: 'Bridgetown', country: 'Barbados', lat: 13.1132, lon: -59.5988, airportCode: 'BGI', description: 'British Caribbean elegance', image: 'https://picsum.photos/seed/barbados/800/600', costOfLiving: 'medium', highlights: ['🏄 Soup Bowl surfing', '🐢 Swim with turtles', '🥃 Mount Gay rum', '🏏 Cricket culture'] },
+  { id: 'turks-caicos', city: 'Providenciales', country: 'Turks and Caicos', lat: 21.7984, lon: -72.2952, airportCode: 'PLS', description: 'Grace Bay perfection', image: 'https://picsum.photos/seed/turks/800/600', costOfLiving: 'high', highlights: ['🏖️ Grace Bay #1 beach', '🤿 Pristine reefs', '🦎 Iguana island', '💵 USD used'] },
+  { id: 'belize', city: 'Belize City', country: 'Belize', lat: 17.4985, lon: -88.1866, airportCode: 'BZE', description: 'Barrier reef and Mayan ruins', image: 'https://picsum.photos/seed/belize/800/600', costOfLiving: 'low', highlights: ['🤿 Blue Hole diving', '🏛️ Mayan temples', '🦈 Shark Ray Alley', '🗣️ English spoken'] },
+  { id: 'cayman', city: 'George Town', country: 'Cayman Islands', lat: 19.2869, lon: -81.3674, airportCode: 'GCM', description: 'Seven Mile Beach paradise', image: 'https://picsum.photos/seed/cayman/800/600', costOfLiving: 'high', highlights: ['🏖️ Seven Mile Beach', '🐢 Turtle Centre', '🤿 Stingray City', '💰 Tax haven'] },
+  { id: 'panama', city: 'Panama City', country: 'Panama', lat: 8.9824, lon: -79.5199, airportCode: 'PTY', description: 'Canal views and colonial charm', image: 'https://picsum.photos/seed/panama/800/600', costOfLiving: 'low', highlights: ['🚢 Canal marvel', '🏰 Casco Viejo', '🌴 San Blas islands', '💵 Uses USD'] },
+  // MEXICO
+  { id: 'mexico-city', city: 'Mexico City', country: 'Mexico', lat: 19.4326, lon: -99.1332, airportCode: 'MEX', description: 'World-class food and ancient history', image: 'https://picsum.photos/seed/mexicocity/800/600', costOfLiving: 'low', highlights: ['🌮 Best tacos on earth', '🏛️ Teotihuacan', '🎨 Frida Kahlo', '🌳 Chapultepec'] },
+  { id: 'cabo', city: 'Cabo San Lucas', country: 'Mexico', lat: 22.8905, lon: -109.9167, airportCode: 'SJD', description: 'Desert meets ocean drama', image: 'https://picsum.photos/seed/cabo/800/600', costOfLiving: 'medium', highlights: ['🪨 El Arco landmark', '🐋 Whale watching', '🏌️ World-class golf', '🎉 Party scene'] },
+  { id: 'puerto-vallarta', city: 'Puerto Vallarta', country: 'Mexico', lat: 20.6534, lon: -105.2253, airportCode: 'PVR', description: 'Charming beach town on Banderas Bay', image: 'https://picsum.photos/seed/puertovallarta/800/600', costOfLiving: 'low', highlights: ['🎭 Malecon boardwalk', '🌅 Romantic sunsets', '🐋 Whale watching', '🏳️‍🌈 LGBTQ+ friendly'] },
+  { id: 'oaxaca', city: 'Oaxaca City', country: 'Mexico', lat: 17.0732, lon: -96.7266, airportCode: 'OAX', description: 'Mezcal, mole, and Monte Alban', image: 'https://picsum.photos/seed/oaxaca/800/600', costOfLiving: 'low', highlights: ['🥃 Mezcal tastings', '🍫 Mole paradise', '🏛️ Monte Alban', '🎨 Artisan crafts'] },
+  { id: 'tulum', city: 'Tulum', country: 'Mexico', lat: 20.2114, lon: -87.4654, airportCode: 'CUN', description: 'Boho beach meets Mayan ruins', image: 'https://picsum.photos/seed/tulum/800/600', costOfLiving: 'medium', highlights: ['🏛️ Cliffside ruins', '🕯️ Cenote diving', '🧘 Wellness retreats', '📸 Instagram heaven'] },
+  // SOUTH AMERICA
+  { id: 'rio', city: 'Rio de Janeiro', country: 'Brazil', lat: -22.9068, lon: -43.1729, airportCode: 'GIG', description: 'Beaches, mountains, and samba', image: 'https://picsum.photos/seed/rio/800/600', costOfLiving: 'medium', highlights: ['🗻 Christ the Redeemer', '🏖️ Ipanema Beach', '🍹 Caipirinhas', '⚠️ Stay aware'] },
+  { id: 'buenos-aires', city: 'Buenos Aires', country: 'Argentina', lat: -34.6037, lon: -58.3816, airportCode: 'EZE', description: 'Tango, steak, and European flair', image: 'https://picsum.photos/seed/buenosaires/800/600', costOfLiving: 'low', highlights: ['💃 Tango shows', '🥩 Best steak ever', '🏛️ La Boca colors', '☕ Cafe culture'] },
+  { id: 'lima', city: 'Lima', country: 'Peru', lat: -12.0464, lon: -77.0428, airportCode: 'LIM', description: 'World capital of ceviche', image: 'https://picsum.photos/seed/lima/800/600', costOfLiving: 'low', highlights: ['🍽️ Top-10 food city', '🏛️ Historic centro', '🏖️ Miraflores cliffs', '🚐 Machu Picchu gateway'] },
+  { id: 'medellin', city: 'Medellin', country: 'Colombia', lat: 6.2442, lon: -75.5812, airportCode: 'MDE', description: 'City of eternal spring', image: 'https://picsum.photos/seed/medellin/800/600', costOfLiving: 'low', highlights: ['🌡️ Perfect 75F always', '🚡 Metro cable cars', '🌸 Flower festival', '☕ Coffee tours'] },
+  { id: 'bogota', city: 'Bogota', country: 'Colombia', lat: 4.7110, lon: -74.0721, airportCode: 'BOG', description: 'High-altitude capital with cool vibes', image: 'https://picsum.photos/seed/bogota/800/600', costOfLiving: 'low', highlights: ['🎨 World-class museums', '🏔️ Monserrate views', '🍺 Craft beer scene', '📚 La Candelaria'] },
+  { id: 'santiago', city: 'Santiago', country: 'Chile', lat: -33.4489, lon: -70.6693, airportCode: 'SCL', description: 'Andes backdrop and wine country', image: 'https://picsum.photos/seed/santiago/800/600', costOfLiving: 'medium', highlights: ['🏔️ Andes day trips', '🍷 Wine valley tours', '🏙️ Modern city', '⛷️ Ski in winter'] },
+  { id: 'cusco', city: 'Cusco', country: 'Peru', lat: -13.5319, lon: -71.9675, airportCode: 'CUZ', description: 'Ancient Inca capital', image: 'https://picsum.photos/seed/cusco/800/600', costOfLiving: 'low', highlights: ['🏛️ Machu Picchu base', '🦙 Sacred Valley', '🍽️ Amazing food', '⛰️ Altitude adjustment'] },
+  // WESTERN EUROPE
+  { id: 'lisbon', city: 'Lisbon', country: 'Portugal', lat: 38.7223, lon: -9.1393, airportCode: 'LIS', description: 'Coastal hills and pastel de nata', image: 'https://picsum.photos/seed/lisbon/800/600', costOfLiving: 'low', highlights: ['🚃 Tram 28', '🥐 Pasteis de Belem', '🍷 5 euro wine', '🏖️ Beach towns nearby'] },
+  { id: 'barcelona', city: 'Barcelona', country: 'Spain', lat: 41.3874, lon: 2.1686, airportCode: 'BCN', description: 'Gaudi, tapas, and Mediterranean beaches', image: 'https://picsum.photos/seed/barcelona/800/600', costOfLiving: 'medium', highlights: ['⛪ Sagrada Familia', '🍷 1 euro vermut', '🏖️ Barceloneta', '🌃 Late dinners'] },
+  { id: 'nice', city: 'Nice', country: 'France', lat: 43.7102, lon: 7.2620, airportCode: 'NCE', description: 'French Riviera glamour', image: 'https://picsum.photos/seed/nice/800/600', costOfLiving: 'high', highlights: ['🏖️ Promenade des Anglais', '🚂 Train to Monaco', '🥐 Socca pancakes', '🎨 Matisse Museum'] },
+  { id: 'rome', city: 'Rome', country: 'Italy', lat: 41.9028, lon: 12.4964, airportCode: 'FCO', description: 'Eternal city of history and pasta', image: 'https://picsum.photos/seed/rome/800/600', costOfLiving: 'medium', highlights: ['🏛️ Colosseum', '⛪ Vatican City', '🍝 Cacio e pepe', '⛲ Trevi Fountain'] },
+  { id: 'seville', city: 'Seville', country: 'Spain', lat: 37.3891, lon: -5.9845, airportCode: 'SVQ', description: 'Flamenco and orange blossoms', image: 'https://picsum.photos/seed/seville/800/600', costOfLiving: 'low', highlights: ['💃 Flamenco shows', '🏰 Alcazar palace', '🍊 Orange tree streets', '🍺 Tapas crawl'] },
+  { id: 'porto', city: 'Porto', country: 'Portugal', lat: 41.1579, lon: -8.6291, airportCode: 'OPO', description: 'Port wine and riverside charm', image: 'https://picsum.photos/seed/porto/800/600', costOfLiving: 'low', highlights: ['🍷 Port wine cellars', '📚 Lello bookshop', '🌉 Dom Luis Bridge', '🍽️ Francesinha'] },
+  { id: 'amalfi', city: 'Amalfi Coast', country: 'Italy', lat: 40.6340, lon: 14.6027, airportCode: 'NAP', description: 'Cliffside Mediterranean perfection', image: 'https://picsum.photos/seed/amalfi/800/600', costOfLiving: 'high', highlights: ['🛵 Scenic coastal drive', '🍋 Limoncello', '🏖️ Positano views', '🍝 Fresh seafood'] },
+  { id: 'florence', city: 'Florence', country: 'Italy', lat: 43.7696, lon: 11.2558, airportCode: 'FLR', description: 'Renaissance art and Tuscan beauty', image: 'https://picsum.photos/seed/florence/800/600', costOfLiving: 'medium', highlights: ['🎨 Uffizi Gallery', '🏛️ Duomo', '🥩 Bistecca fiorentina', '🍷 Chianti trips'] },
+  { id: 'madrid', city: 'Madrid', country: 'Spain', lat: 40.4168, lon: -3.7038, airportCode: 'MAD', description: 'Royal palaces and late-night tapas', image: 'https://picsum.photos/seed/madrid/800/600', costOfLiving: 'medium', highlights: ['🎨 Prado Museum', '🏰 Royal Palace', '🍺 Tapas at midnight', '⚽ Football culture'] },
+  { id: 'valencia', city: 'Valencia', country: 'Spain', lat: 39.4699, lon: -0.3763, airportCode: 'VLC', description: 'Paella birthplace with futuristic flair', image: 'https://picsum.photos/seed/valencia/800/600', costOfLiving: 'low', highlights: ['🥘 Original paella', '🏛️ City of Arts', '🏖️ City beaches', '🍊 Orange groves'] },
+  { id: 'dubrovnik', city: 'Dubrovnik', country: 'Croatia', lat: 42.6507, lon: 18.0944, airportCode: 'DBV', description: 'Pearl of the Adriatic', image: 'https://picsum.photos/seed/dubrovnik/800/600', costOfLiving: 'medium', highlights: ['🏰 City walls walk', '🎬 Game of Thrones', '🏖️ Banje Beach', '🚡 Cable car views'] },
+  { id: 'split', city: 'Split', country: 'Croatia', lat: 43.5081, lon: 16.4402, airportCode: 'SPU', description: 'Roman palace turned city', image: 'https://picsum.photos/seed/split/800/600', costOfLiving: 'low', highlights: ['🏛️ Diocletians Palace', '⛴️ Island hopping', '🏖️ Nearby beaches', '🍷 Croatian wine'] },
+  // EASTERN EUROPE & BALKANS
+  { id: 'athens', city: 'Athens', country: 'Greece', lat: 37.9838, lon: 23.7275, airportCode: 'ATH', description: 'Ancient history meets modern energy', image: 'https://picsum.photos/seed/athens/800/600', costOfLiving: 'medium', highlights: ['🏛️ Acropolis at sunrise', '🥙 3 euro gyros', '⛴️ Island ferries', '🍸 Rooftop bars'] },
+  { id: 'santorini', city: 'Santorini', country: 'Greece', lat: 36.3932, lon: 25.4615, airportCode: 'JTR', description: 'Iconic white and blue sunsets', image: 'https://picsum.photos/seed/santorini/800/600', costOfLiving: 'high', highlights: ['🌅 Oia sunset', '🍷 Volcanic wine', '🏊 Caldera swimming', '📸 Instagram heaven'] },
+  { id: 'mykonos', city: 'Mykonos', country: 'Greece', lat: 37.4467, lon: 25.3289, airportCode: 'JMK', description: 'Party island with windmill charm', image: 'https://picsum.photos/seed/mykonos/800/600', costOfLiving: 'high', highlights: ['🎉 Beach clubs', '🏳️‍🌈 LGBTQ+ friendly', '🐙 Little Venice', '💨 Iconic windmills'] },
+  { id: 'crete', city: 'Heraklion', country: 'Greece', lat: 35.3387, lon: 25.1442, airportCode: 'HER', description: 'Largest Greek island', image: 'https://picsum.photos/seed/crete/800/600', costOfLiving: 'low', highlights: ['🏛️ Knossos palace', '🏖️ Pink sand beaches', '🧀 Cretan cuisine', '🥾 Samaria Gorge'] },
+  { id: 'budapest', city: 'Budapest', country: 'Hungary', lat: 47.4979, lon: 19.0402, airportCode: 'BUD', description: 'Thermal baths and ruin bars', image: 'https://picsum.photos/seed/budapest/800/600', costOfLiving: 'low', highlights: ['♨️ Thermal baths', '🍺 Ruin bars', '🏛️ Parliament', '🌉 Danube views'] },
+  { id: 'prague', city: 'Prague', country: 'Czech Republic', lat: 50.0755, lon: 14.4378, airportCode: 'PRG', description: 'Fairytale spires and cheap beer', image: 'https://picsum.photos/seed/prague/800/600', costOfLiving: 'low', highlights: ['🏰 Prague Castle', '🍺 $2 beer', '🌉 Charles Bridge', '⏰ Astronomical clock'] },
+  { id: 'istanbul', city: 'Istanbul', country: 'Turkey', lat: 41.0082, lon: 28.9784, airportCode: 'IST', description: 'Where East meets West', image: 'https://picsum.photos/seed/istanbul/800/600', costOfLiving: 'low', highlights: ['🕌 Hagia Sophia', '🛒 Grand Bazaar', '🍢 Street food', '⛴️ Bosphorus cruise'] },
+  { id: 'tel-aviv', city: 'Tel Aviv', country: 'Israel', lat: 32.0853, lon: 34.7818, airportCode: 'TLV', description: 'Mediterranean beaches and nightlife', image: 'https://picsum.photos/seed/telaviv/800/600', costOfLiving: 'high', highlights: ['🏖️ Beach culture', '🎉 Epic nightlife', '🥙 Best hummus', '🏛️ Jaffa old town'] },
+  // MIDDLE EAST & NORTH AFRICA
+  { id: 'dubai', city: 'Dubai', country: 'UAE', lat: 25.2048, lon: 55.2708, airportCode: 'DXB', description: 'Futuristic skyline and desert adventures', image: 'https://picsum.photos/seed/dubai/800/600', costOfLiving: 'high', highlights: ['🏙️ Burj Khalifa', '🏜️ Desert safari', '🛍️ Dubai Mall', '🍽️ Friday brunch'] },
+  { id: 'marrakech', city: 'Marrakech', country: 'Morocco', lat: 31.6295, lon: -7.9811, airportCode: 'RAK', description: 'Souks, riads, and vibrant culture', image: 'https://picsum.photos/seed/marrakech/800/600', costOfLiving: 'low', highlights: ['🏨 Stay in a riad', '🛍️ Souk haggling', '🍵 Free mint tea', '🏜️ Desert trips'] },
+  { id: 'cairo', city: 'Cairo', country: 'Egypt', lat: 30.0444, lon: 31.2357, airportCode: 'CAI', description: 'Pyramids and ancient wonders', image: 'https://picsum.photos/seed/cairo/800/600', costOfLiving: 'low', highlights: ['🔺 Giza Pyramids', '🏛️ Egyptian Museum', '⛵ Nile felucca', '🛒 Khan el-Khalili'] },
+  { id: 'jordan', city: 'Amman', country: 'Jordan', lat: 31.9454, lon: 35.9284, airportCode: 'AMM', description: 'Petra and Dead Sea adventures', image: 'https://picsum.photos/seed/jordan/800/600', costOfLiving: 'medium', highlights: ['🏛️ Petra', '🌊 Dead Sea float', '🏜️ Wadi Rum', '🍽️ Mansaf feast'] },
+  // SUB-SAHARAN AFRICA
+  { id: 'cape-town', city: 'Cape Town', country: 'South Africa', lat: -33.9249, lon: 18.4241, airportCode: 'CPT', description: 'Table Mountain and coastal beauty', image: 'https://picsum.photos/seed/capetown/800/600', costOfLiving: 'medium', highlights: ['⛰️ Table Mountain', '🍷 $5 world-class wine', '🐧 Boulders Beach', '💰 Great exchange'] },
+  { id: 'zanzibar', city: 'Stone Town', country: 'Tanzania', lat: -6.1659, lon: 39.2026, airportCode: 'ZNZ', description: 'Spice island paradise', image: 'https://picsum.photos/seed/zanzibar/800/600', costOfLiving: 'low', highlights: ['🏖️ White sand beaches', '🌶️ Spice tours', '🏛️ Stone Town history', '🐬 Dolphin tours'] },
+  { id: 'mauritius', city: 'Port Louis', country: 'Mauritius', lat: -20.1609, lon: 57.5012, airportCode: 'MRU', description: 'Tropical luxury in the Indian Ocean', image: 'https://picsum.photos/seed/mauritius/800/600', costOfLiving: 'medium', highlights: ['🏖️ Stunning beaches', '🌈 Seven Colored Earths', '🤿 Snorkeling', '🏌️ Golf resorts'] },
+  { id: 'nairobi', city: 'Nairobi', country: 'Kenya', lat: -1.2921, lon: 36.8219, airportCode: 'NBO', description: 'Safari gateway city', image: 'https://picsum.photos/seed/nairobi/800/600', costOfLiving: 'low', highlights: ['🦁 Safari gateway', '🐘 Elephant orphanage', '🦒 Giraffe Centre', '🏙️ Modern city'] },
+  // SOUTH ASIA
+  { id: 'goa', city: 'Goa', country: 'India', lat: 15.2993, lon: 74.1240, airportCode: 'GOI', description: 'Beach vibes and Portuguese heritage', image: 'https://picsum.photos/seed/goa/800/600', costOfLiving: 'low', highlights: ['🏖️ Beach shacks', '🕌 Old Goa churches', '🎉 Party scene', '🍛 Goan curry'] },
+  { id: 'sri-lanka', city: 'Colombo', country: 'Sri Lanka', lat: 6.9271, lon: 79.8612, airportCode: 'CMB', description: 'Beaches, temples, and tea', image: 'https://picsum.photos/seed/srilanka/800/600', costOfLiving: 'low', highlights: ['🏛️ Ancient temples', '🐘 Elephant encounters', '🍵 Tea plantations', '🏄 Surf spots'] },
+  { id: 'maldives', city: 'Male', country: 'Maldives', lat: 4.1755, lon: 73.5093, airportCode: 'MLE', description: 'Overwater bungalow dreams', image: 'https://picsum.photos/seed/maldives/800/600', costOfLiving: 'high', highlights: ['🏝️ Overwater villas', '🤿 World-class diving', '🦈 Shark snorkeling', '🌅 Sandbank picnics'] },
+  // SOUTHEAST ASIA
+  { id: 'bali', city: 'Bali', country: 'Indonesia', lat: -8.6500, lon: 115.2167, airportCode: 'DPS', description: 'Temples, rice terraces, and surf', image: 'https://picsum.photos/seed/bali/800/600', costOfLiving: 'low', highlights: ['🏄 Kuta surfing', '🌾 Rice terraces', '🐒 Monkey forest', '💆 $30 spa days'] },
+  { id: 'phuket', city: 'Phuket', country: 'Thailand', lat: 7.8804, lon: 98.3923, airportCode: 'HKT', description: 'Thai beaches and island hopping', image: 'https://picsum.photos/seed/phuket/800/600', costOfLiving: 'low', highlights: ['🛥️ Phi Phi Islands', '💆 $10 massages', '🍜 $2 pad thai', '🌅 Kata Beach'] },
+  { id: 'bangkok', city: 'Bangkok', country: 'Thailand', lat: 13.7563, lon: 100.5018, airportCode: 'BKK', description: 'Temples, street food, and chaos', image: 'https://picsum.photos/seed/bangkok/800/600', costOfLiving: 'low', highlights: ['🕌 Grand Palace', '🍜 Street food paradise', '🛕 Wat Pho', '🛍️ Chatuchak market'] },
+  { id: 'chiang-mai', city: 'Chiang Mai', country: 'Thailand', lat: 18.7883, lon: 98.9853, airportCode: 'CNX', description: 'Mountain temples and elephants', image: 'https://picsum.photos/seed/chiangmai/800/600', costOfLiving: 'low', highlights: ['🐘 Ethical elephants', '🛕 300+ temples', '🍜 Khao soi', '🎉 Sunday market'] },
+  { id: 'hoi-an', city: 'Hoi An', country: 'Vietnam', lat: 15.8801, lon: 108.3380, airportCode: 'DAD', description: 'Lantern-lit ancient town', image: 'https://picsum.photos/seed/hoian/800/600', costOfLiving: 'low', highlights: ['🏮 Lantern old town', '👗 $50 tailored suits', '🍜 Banh mi heaven', '🏖️ An Bang Beach'] },
+  { id: 'singapore', city: 'Singapore', country: 'Singapore', lat: 1.3521, lon: 103.8198, airportCode: 'SIN', description: 'Futuristic city-state', image: 'https://picsum.photos/seed/singapore/800/600', costOfLiving: 'high', highlights: ['🌳 Gardens by the Bay', '🍜 Hawker centers', '🎰 Marina Bay Sands', '🦁 Merlion'] },
+  { id: 'kuala-lumpur', city: 'Kuala Lumpur', country: 'Malaysia', lat: 3.1390, lon: 101.6869, airportCode: 'KUL', description: 'Twin towers and diverse culture', image: 'https://picsum.photos/seed/kualalumpur/800/600', costOfLiving: 'low', highlights: ['🏙️ Petronas Towers', '🕌 Batu Caves', '🍜 Food paradise', '🛍️ Budget shopping'] },
+  { id: 'siem-reap', city: 'Siem Reap', country: 'Cambodia', lat: 13.3671, lon: 103.8448, airportCode: 'REP', description: 'Gateway to Angkor Wat', image: 'https://picsum.photos/seed/siemreap/800/600', costOfLiving: 'low', highlights: ['🏛️ Angkor Wat sunrise', '🍺 Pub Street', '🎭 Apsara dance', '🚲 Temple cycling'] },
+  { id: 'el-nido', city: 'El Nido', country: 'Philippines', lat: 11.1784, lon: 119.4173, airportCode: 'USU', description: 'Limestone cliffs and lagoons', image: 'https://picsum.photos/seed/elnido/800/600', costOfLiving: 'low', highlights: ['🏝️ Island hopping', '🏊 Big Lagoon', '🤿 Secret beaches', '🌅 Las Cabanas'] },
+  // EAST ASIA
+  { id: 'tokyo', city: 'Tokyo', country: 'Japan', lat: 35.6762, lon: 139.6503, airportCode: 'HND', description: 'Ancient meets ultra-modern', image: 'https://picsum.photos/seed/tokyo/800/600', costOfLiving: 'high', highlights: ['🗼 Shibuya crossing', '🍣 Best sushi ever', '⛩️ Temples and shrines', '🎮 Gaming culture'] },
+  { id: 'kyoto', city: 'Kyoto', country: 'Japan', lat: 35.0116, lon: 135.7681, airportCode: 'KIX', description: 'Traditional temples and geisha', image: 'https://picsum.photos/seed/kyoto/800/600', costOfLiving: 'high', highlights: ['⛩️ Fushimi Inari', '🎎 Geisha district', '🍵 Tea ceremonies', '🌸 Cherry blossoms'] },
+  { id: 'seoul', city: 'Seoul', country: 'South Korea', lat: 37.5665, lon: 126.9780, airportCode: 'ICN', description: 'K-culture and ancient palaces', image: 'https://picsum.photos/seed/seoul/800/600', costOfLiving: 'medium', highlights: ['🏛️ Gyeongbokgung Palace', '🎤 K-pop culture', '🍖 Korean BBQ', '💄 Beauty shopping'] },
+  { id: 'taipei', city: 'Taipei', country: 'Taiwan', lat: 25.0330, lon: 121.5654, airportCode: 'TPE', description: 'Night markets and hot springs', image: 'https://picsum.photos/seed/taipei/800/600', costOfLiving: 'medium', highlights: ['🍜 Night market food', '🏙️ Taipei 101', '♨️ Beitou hot springs', '🏛️ Temple culture'] },
+  { id: 'hong-kong', city: 'Hong Kong', country: 'Hong Kong', lat: 22.3193, lon: 114.1694, airportCode: 'HKG', description: 'Skyline and dim sum paradise', image: 'https://picsum.photos/seed/hongkong/800/600', costOfLiving: 'high', highlights: ['🏙️ Victoria Peak', '🥟 Dim sum', '⛴️ Star Ferry', '🏝️ Outlying islands'] },
+  // AUSTRALIA & PACIFIC
+  { id: 'sydney', city: 'Sydney', country: 'Australia', lat: -33.8688, lon: 151.2093, airportCode: 'SYD', description: 'Harbour views and beach culture', image: 'https://picsum.photos/seed/sydney/800/600', costOfLiving: 'high', highlights: ['🌉 Harbour Bridge', '🏖️ Bondi to Coogee', '☕ Coffee culture', '🦘 Blue Mountains'] },
+  { id: 'melbourne', city: 'Melbourne', country: 'Australia', lat: -37.8136, lon: 144.9631, airportCode: 'MEL', description: 'Coffee, art, and laneways', image: 'https://picsum.photos/seed/melbourne/800/600', costOfLiving: 'high', highlights: ['☕ Worlds best coffee', '🎨 Street art laneways', '🏏 Sports obsessed', '🍽️ Foodie heaven'] },
+  { id: 'gold-coast', city: 'Gold Coast', country: 'Australia', lat: -28.0167, lon: 153.4000, airportCode: 'OOL', description: 'Surf beaches and theme parks', image: 'https://picsum.photos/seed/goldcoast/800/600', costOfLiving: 'medium', highlights: ['🏄 Surfers Paradise', '🎢 Theme parks', '🌴 Hinterland', '🦘 Currumbin Wildlife'] },
+  { id: 'auckland', city: 'Auckland', country: 'New Zealand', lat: -36.8509, lon: 174.7645, airportCode: 'AKL', description: 'City of Sails', image: 'https://picsum.photos/seed/auckland/800/600', costOfLiving: 'high', highlights: ['⛵ Harbour sailing', '🌋 Rangitoto Island', '🏉 Rugby culture', '🍷 Waiheke wineries'] },
+  { id: 'fiji', city: 'Nadi', country: 'Fiji', lat: -17.7765, lon: 177.4356, airportCode: 'NAN', description: 'Bula spirit and island hopping', image: 'https://picsum.photos/seed/fiji/800/600', costOfLiving: 'medium', highlights: ['🏝️ Island resorts', '🤿 Soft coral diving', '😊 Bula welcome', '🥥 Kava ceremonies'] },
+  // USA - MAINLAND
+  { id: 'miami', city: 'Miami', country: 'USA', lat: 25.7617, lon: -80.1918, airportCode: 'MIA', description: 'Art deco, beaches, and nightlife', image: 'https://picsum.photos/seed/miami/800/600', costOfLiving: 'high', highlights: ['🌴 South Beach', '🎨 Wynwood Walls', '🚤 Key Biscayne', '🎉 Midnight nightlife'] },
+  { id: 'san-diego', city: 'San Diego', country: 'USA', lat: 32.7157, lon: -117.1611, airportCode: 'SAN', description: 'Perfect weather and laid-back vibes', image: 'https://picsum.photos/seed/sandiego/800/600', costOfLiving: 'medium', highlights: ['🌴 70F year-round', '🌮 Fish tacos', '🦭 La Jolla seals', '🍺 Craft breweries'] },
+  { id: 'key-west', city: 'Key West', country: 'USA', lat: 24.5551, lon: -81.7800, airportCode: 'EYW', description: 'Southernmost point with endless sunsets', image: 'https://picsum.photos/seed/keywest/800/600', costOfLiving: 'high', highlights: ['🌅 Mallory Square', '🚴 Bike everywhere', '🥧 Key lime pie', '🐓 Free-roaming chickens'] },
+  { id: 'honolulu', city: 'Honolulu', country: 'USA', lat: 21.3069, lon: -157.8583, airportCode: 'HNL', description: 'Tropical paradise in the Pacific', image: 'https://picsum.photos/seed/honolulu/800/600', costOfLiving: 'high', highlights: ['🌅 Diamond Head', '🏄 Waikiki surfing', '🍲 Poke bowls', '🚗 North Shore drive'] },
+  { id: 'maui', city: 'Maui', country: 'USA', lat: 20.7984, lon: -156.3319, airportCode: 'OGG', description: 'Road to Hana and volcano sunrise', image: 'https://picsum.photos/seed/maui/800/600', costOfLiving: 'high', highlights: ['🚗 Road to Hana', '🌅 Haleakala sunrise', '🐋 Whale watching', '🏖️ Kaanapali Beach'] },
+  { id: 'la', city: 'Los Angeles', country: 'USA', lat: 34.0522, lon: -118.2437, airportCode: 'LAX', description: 'Hollywood and beach life', image: 'https://picsum.photos/seed/losangeles/800/600', costOfLiving: 'high', highlights: ['🎬 Hollywood sign', '🏖️ Santa Monica', '🌴 Venice Beach', '🎭 Entertainment capital'] },
+  { id: 'austin', city: 'Austin', country: 'USA', lat: 30.2672, lon: -97.7431, airportCode: 'AUS', description: 'Live music capital', image: 'https://picsum.photos/seed/austin/800/600', costOfLiving: 'medium', highlights: ['🎸 Live music nightly', '🌮 Tex-Mex and BBQ', '🦇 Congress Ave bats', '🏊 Barton Springs'] },
+  { id: 'new-orleans', city: 'New Orleans', country: 'USA', lat: 29.9511, lon: -90.0715, airportCode: 'MSY', description: 'Jazz, beignets, and Bourbon Street', image: 'https://picsum.photos/seed/neworleans/800/600', costOfLiving: 'medium', highlights: ['🎺 Live jazz', '🥐 Cafe Du Monde', '🎭 French Quarter', '🎉 Mardi Gras'] },
+  { id: 'charleston', city: 'Charleston', country: 'USA', lat: 32.7765, lon: -79.9311, airportCode: 'CHS', description: 'Southern charm and culinary scene', image: 'https://picsum.photos/seed/charleston/800/600', costOfLiving: 'medium', highlights: ['🏛️ Historic downtown', '🦐 Lowcountry cuisine', '🏖️ Nearby beaches', '🌳 Oak-lined streets'] },
+  { id: 'phoenix', city: 'Phoenix', country: 'USA', lat: 33.4484, lon: -112.0740, airportCode: 'PHX', description: 'Desert oasis with winter sun', image: 'https://picsum.photos/seed/phoenix/800/600', costOfLiving: 'medium', highlights: ['☀️ 300+ sunny days', '🏌️ World-class golf', '🏜️ Desert hiking', '⛱️ Pool weather'] },
+  { id: 'scottsdale', city: 'Scottsdale', country: 'USA', lat: 33.4942, lon: -111.9261, airportCode: 'PHX', description: 'Desert luxury and spa retreats', image: 'https://picsum.photos/seed/scottsdale/800/600', costOfLiving: 'high', highlights: ['💆 Spa resorts', '🎨 Old Town galleries', '🌵 Desert Botanical', '🏌️ Golf paradise'] },
+  { id: 'palm-springs', city: 'Palm Springs', country: 'USA', lat: 33.8303, lon: -116.5453, airportCode: 'PSP', description: 'Mid-century modern desert chic', image: 'https://picsum.photos/seed/palmsprings/800/600', costOfLiving: 'high', highlights: ['🏠 Mid-century architecture', '🚡 Aerial tramway', '🎰 Casino nightlife', '🏳️‍🌈 LGBTQ+ friendly'] },
+  { id: 'sedona', city: 'Sedona', country: 'USA', lat: 34.8697, lon: -111.7610, airportCode: 'PHX', description: 'Red rock spiritual vortex', image: 'https://picsum.photos/seed/sedona/800/600', costOfLiving: 'high', highlights: ['🔴 Red rock formations', '🧘 Energy vortexes', '🥾 Hiking trails', '🎨 Art galleries'] },
+  // NORTHERN EUROPE
+  { id: 'amsterdam', city: 'Amsterdam', country: 'Netherlands', lat: 52.3676, lon: 4.9041, airportCode: 'AMS', description: 'Canals, bikes, and culture', image: 'https://picsum.photos/seed/amsterdam/800/600', costOfLiving: 'high', highlights: ['🚲 Bike everywhere', '🎨 Van Gogh Museum', '🏠 Canal houses', '🌷 Tulip season'] },
+  { id: 'copenhagen', city: 'Copenhagen', country: 'Denmark', lat: 55.6761, lon: 12.5683, airportCode: 'CPH', description: 'Hygge and Nordic design', image: 'https://picsum.photos/seed/copenhagen/800/600', costOfLiving: 'high', highlights: ['🧜‍♀️ Little Mermaid', '🎢 Tivoli Gardens', '🍽️ Noma nearby', '🚲 Bike culture'] },
+  { id: 'london', city: 'London', country: 'UK', lat: 51.5074, lon: -0.1278, airportCode: 'LHR', description: 'History meets modern culture', image: 'https://picsum.photos/seed/london/800/600', costOfLiving: 'high', highlights: ['🏰 Tower of London', '🎭 West End shows', '🏛️ Free museums', '☕ Afternoon tea'] },
+  { id: 'edinburgh', city: 'Edinburgh', country: 'UK', lat: 55.9533, lon: -3.1883, airportCode: 'EDI', description: 'Castle views and whisky trails', image: 'https://picsum.photos/seed/edinburgh/800/600', costOfLiving: 'medium', highlights: ['🏰 Edinburgh Castle', '🥃 Whisky tastings', '🎭 Festival Fringe', '🏔️ Arthurs Seat'] },
+  { id: 'dublin', city: 'Dublin', country: 'Ireland', lat: 53.3498, lon: -6.2603, airportCode: 'DUB', description: 'Literary pubs and Celtic history', image: 'https://picsum.photos/seed/dublin/800/600', costOfLiving: 'high', highlights: ['🍺 Guinness Storehouse', '📚 Trinity College', '🎵 Live music pubs', '🏰 Day trip castles'] },
+  { id: 'paris', city: 'Paris', country: 'France', lat: 48.8566, lon: 2.3522, airportCode: 'CDG', description: 'City of light and love', image: 'https://picsum.photos/seed/paris/800/600', costOfLiving: 'high', highlights: ['🗼 Eiffel Tower', '🎨 Louvre Museum', '🥐 Croissant culture', '🍷 Sidewalk cafes'] },
+  { id: 'berlin', city: 'Berlin', country: 'Germany', lat: 52.5200, lon: 13.4050, airportCode: 'BER', description: 'History, art, and nightlife', image: 'https://picsum.photos/seed/berlin/800/600', costOfLiving: 'medium', highlights: ['🏛️ Brandenburg Gate', '🎨 East Side Gallery', '🎉 Epic nightclubs', '🌭 Currywurst'] },
+  { id: 'munich', city: 'Munich', country: 'Germany', lat: 48.1351, lon: 11.5820, airportCode: 'MUC', description: 'Beer gardens and Bavarian charm', image: 'https://picsum.photos/seed/munich/800/600', costOfLiving: 'medium', highlights: ['🍺 Oktoberfest', '🏰 Neuschwanstein', '🏛️ Marienplatz', '🌳 English Garden'] },
+  { id: 'vienna', city: 'Vienna', country: 'Austria', lat: 48.2082, lon: 16.3738, airportCode: 'VIE', description: 'Imperial palaces and coffee houses', image: 'https://picsum.photos/seed/vienna/800/600', costOfLiving: 'medium', highlights: ['🏰 Schonbrunn Palace', '☕ Cafe culture', '🎵 Opera house', '🎂 Sachertorte'] },
+  { id: 'zurich', city: 'Zurich', country: 'Switzerland', lat: 47.3769, lon: 8.5417, airportCode: 'ZRH', description: 'Alpine lakes and Swiss precision', image: 'https://picsum.photos/seed/zurich/800/600', costOfLiving: 'high', highlights: ['🏔️ Alps day trips', '🏊 Lake swimming', '🍫 Chocolate tours', '🏙️ Clean perfection'] },
+  // CANADA
+  { id: 'vancouver', city: 'Vancouver', country: 'Canada', lat: 49.2827, lon: -123.1207, airportCode: 'YVR', description: 'Mountains meet ocean', image: 'https://picsum.photos/seed/vancouver/800/600', costOfLiving: 'high', highlights: ['🏔️ Grouse Mountain', '🌲 Stanley Park', '🍣 Amazing sushi', '⛷️ Whistler nearby'] },
+  { id: 'toronto', city: 'Toronto', country: 'Canada', lat: 43.6532, lon: -79.3832, airportCode: 'YYZ', description: 'Canadas diverse metropolis', image: 'https://picsum.photos/seed/toronto/800/600', costOfLiving: 'high', highlights: ['🗼 CN Tower', '🏝️ Toronto Islands', '🍽️ Food diversity', '🎭 Theater district'] },
+  { id: 'montreal', city: 'Montreal', country: 'Canada', lat: 45.5017, lon: -73.5673, airportCode: 'YUL', description: 'French flair in North America', image: 'https://picsum.photos/seed/montreal/800/600', costOfLiving: 'medium', highlights: ['🗣️ French spoken', '🥯 Bagel rivalry', '🎭 Festivals galore', '🏛️ Old Montreal'] },
 ];
 
 export function getDestinationByAirport(code: string): Destination | undefined {
