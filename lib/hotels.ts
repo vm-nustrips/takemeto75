@@ -1,133 +1,149 @@
+import Anthropic from '@anthropic-ai/sdk';
 import { HotelOffer, Tier } from './types';
-import { getHotelsByGeocode, getHotelOffers, transformAmadeusData } from './amadeus';
+import { webSearch } from './web-search';
 
-// Luxury hotel brands for tier detection
-const LUXURY_BRANDS = [
-  'four seasons', 'ritz-carlton', 'ritz carlton', 'park hyatt', 'rosewood',
-  'st. regis', 'st regis', 'mandarin oriental', 'peninsula', 'aman',
-  'bulgari', 'edition', 'waldorf astoria', 'conrad', 'w hotel',
-  'jw marriott', 'fairmont', 'langham', 'sofitel'
-];
-
-function isLuxuryBrand(hotelName: string): boolean {
-  const nameLower = hotelName.toLowerCase();
-  return LUXURY_BRANDS.some(brand => nameLower.includes(brand));
-}
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
 export async function searchHotels(
   lat: number,
   lon: number,
   checkIn: string,
   checkOut: string,
-  tier: Tier = 'base'
+  tier: Tier = 'base',
+  city?: string,
+  country?: string
 ): Promise<HotelOffer[]> {
-  // Check if Amadeus is configured
-  if (!process.env.AMADEUS_API_KEY || !process.env.AMADEUS_API_SECRET) {
-    console.log('Amadeus not configured, using mock hotels');
-    return getMockHotels(checkIn, checkOut);
-  }
-
-  try {
-    // Step 1: Get hotel IDs from Amadeus (filtered by tier ratings)
-    console.log(`Searching Amadeus hotels at ${lat}, ${lon} for tier: ${tier}`);
-    const hotelList = await getHotelsByGeocode(lat, lon, tier);
-
-    if (hotelList.length === 0) {
-      console.log('No hotels found in Amadeus, using mock');
-      return getMockHotels(checkIn, checkOut);
-    }
-
-    console.log(`Found ${hotelList.length} hotels in Amadeus`);
-
-    // Step 2: Get pricing for top 20 hotels (to control API costs)
-    const hotelIds = hotelList.slice(0, 20).map(h => h.hotelId);
-    const offers = await getHotelOffers(hotelIds, checkIn, checkOut);
-
-    if (offers.length === 0) {
-      console.log('No hotel offers available, using mock');
-      return getMockHotels(checkIn, checkOut);
-    }
-
-    console.log(`Got ${offers.length} hotel offers with pricing`);
-
-    // Step 3: Transform to HotelOffer format
-    const amadeusResults = transformAmadeusData(hotelList, offers, checkIn, checkOut);
-
-    const nights = Math.ceil(
-      (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    const hotels: HotelOffer[] = amadeusResults.map((h, index) => ({
-      id: `amadeus_${h.hotelId}_${Date.now()}`,
-      name: h.name,
-      starRating: h.starRating,
-      reviewScore: h.starRating * 18 + Math.floor(Math.random() * 10), // Estimate until Booking.com enrichment
-      pricePerNight: Math.round(h.priceTotal / nights),
-      totalPrice: Math.round(h.priceTotal),
-      currency: h.currency,
-      roomType: h.roomType,
-      freeCancellation: h.starRating >= 4, // Estimate
-      breakfastIncluded: h.boardType.includes('BREAKFAST'),
-      photo: `https://picsum.photos/seed/hotel${index + 200}/400/300`,
-      isLuxuryBrand: isLuxuryBrand(h.name),
-      // Amadeus-specific
-      amadeusHotelId: h.hotelId,
-      amadeusOfferId: h.offerId,
-      boardType: h.boardType,
-    }));
-
-    return hotels;
-  } catch (error) {
-    console.error('Amadeus hotel search failed:', error);
-    return getMockHotels(checkIn, checkOut);
-  }
-}
-
-// Fallback mock hotels (existing implementation)
-function getMockHotels(checkIn: string, checkOut: string): HotelOffer[] {
   const nights = Math.ceil(
     (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24)
   );
 
-  const hotels = [
-    // Luxury brands for Luxe tier
-    { name: 'Four Seasons Resort', stars: 5, basePrice: 650, score: 96, luxury: true },
-    { name: 'Ritz-Carlton', stars: 5, basePrice: 580, score: 95, luxury: true },
-    { name: 'Park Hyatt', stars: 5, basePrice: 520, score: 94, luxury: true },
-    { name: 'Rosewood Hotel', stars: 5, basePrice: 600, score: 95, luxury: true },
+  const starRating = tier === 'luxe' ? '5 star luxury resort' :
+                     tier === 'premium' ? '4 star' : '3 star budget friendly';
 
-    // Premium 4-5 star hotels
-    { name: 'Grand Hyatt', stars: 5, basePrice: 320, score: 91, luxury: false },
-    { name: 'Marriott Resort & Spa', stars: 4, basePrice: 240, score: 88, luxury: false },
-    { name: 'Hilton Oceanfront', stars: 4, basePrice: 210, score: 87, luxury: false },
-    { name: 'InterContinental', stars: 5, basePrice: 280, score: 89, luxury: false },
-    { name: 'Kimpton Hotel', stars: 4, basePrice: 195, score: 89, luxury: false },
+  const locationStr = city && country ? `${city} ${country}` : `near ${lat},${lon}`;
 
-    // Budget-friendly for Base tier
-    { name: 'Holiday Inn Express', stars: 3, basePrice: 95, score: 84, luxury: false },
-    { name: 'Hampton Inn', stars: 3, basePrice: 85, score: 83, luxury: false },
-    { name: 'Courtyard by Marriott', stars: 3, basePrice: 110, score: 85, luxury: false },
-    { name: 'Hyatt Place', stars: 3, basePrice: 105, score: 84, luxury: false },
-    { name: 'Best Western Plus', stars: 3, basePrice: 75, score: 81, luxury: false },
-  ];
+  // Search for hotel info via web
+  const query = `best ${starRating} hotels ${locationStr} 2024 2025`;
+  console.log(`[Hotels] Searching: ${query}`);
+  const searchResults = await webSearch(query);
 
-  return hotels.map((h, i) => {
-    const priceVariance = Math.random() * 50 - 25;
-    const pricePerNight = Math.round(h.basePrice + priceVariance);
+  // Use Claude to find real hotels for this destination
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 1500,
+    messages: [{
+      role: 'user',
+      content: `You are the travel editor at a magazine like Condé Nast Traveler, helping someone book a spontaneous ${nights}-night escape to perfect weather. They value their time, have taste, and want a hotel that feels like part of the trip - not just a place to sleep.
 
+DESTINATION: ${city}, ${country}
+TIER: ${tier.toUpperCase()}
+NIGHTS: ${nights}
+
+TIER PHILOSOPHY:
+
+BASE ($80-250/night):
+Hotels that punch above their weight. The kind of place a well-traveled friend would say "trust me, book this one."
+- Boutique hotels with 8.2+ ratings and actual personality
+- Design-forward budget brands: Hoxton, Generator, Mama Shelter, CitizenM, 25hours, Moxy (the cool Marriott)
+- Stylish hostels with private rooms (Selina, Freehand)
+- That one local boutique everyone on Reddit recommends
+- Historic buildings with character: converted monasteries, art deco gems, etc.
+AVOID: Chains that could be anywhere, corporate lobbies, highway locations
+
+PREMIUM ($180-450/night):
+Hotels you'd actually remember and recommend. Instagram-worthy without trying.
+- Mr & Mrs Smith collection properties (prioritize these - their curation is impeccable)
+- Design Hotels members
+- Tablet Hotels picks
+- Urban cool: Ace Hotel, The Standard, Proper, Line Hotels, Shinola, Palisociety
+- Boutique resorts with a specific point of view
+- The "it" hotel that travel editors stay at
+- Places where the bar/restaurant is a destination itself
+AVOID: Business hotels, conference properties, anything beige
+
+LUXE ($400-2000/night):
+The dream. Hotels that are destinations themselves.
+PRIORITIZE IN ORDER:
+1. Mr & Mrs Smith "boutique luxury" or "extraordinary" tier (their taste is unmatched)
+2. Small Luxury Hotels of the World (SLH) - independent luxury done right
+3. Relais & Châteaux (especially for Europe, countryside, culinary destinations)
+4. Leading Hotels of the World members
+5. The big names done right: Four Seasons, Aman, Rosewood, Park Hyatt, Mandarin Oriental, Edition, St. Regis
+6. Legendary independents: Chateau Marmont, Chiltern Firehouse, The Ned, etc.
+For beach/resort destinations: Prioritize places with their own beach/water access
+AVOID: Vegas-style mega hotels, cruise-ship vibes, stuffy old-money places with dated decor
+
+${searchResults ? `DESTINATION CONTEXT:\n"""\n${searchResults}\n"""` : ''}
+
+CRITICAL RULES:
+1. ONLY suggest hotels that are CURRENTLY OPERATING and bookable
+2. Use EXACT current hotel names (verify against search results)
+3. Prices should reflect the destination's actual market (a boutique in Lisbon ≠ Manhattan)
+4. Location matters: walkable to the good stuff, in a neighborhood they'd want to explore
+5. Every pick should pass the "would I text this to a friend?" test
+6. If Mr & Mrs Smith or Design Hotels has a property at this destination in the right tier, it should probably be your first pick
+
+Return exactly 3 hotels as JSON array. Mix it up: don't suggest 3 of the same type.
+
+[
+  {
+    "name": "Exact Hotel Name",
+    "neighborhood": "Specific area - e.g. 'Gothic Quarter' not just 'Barcelona'",
+    "pricePerNight": 220,
+    "reviewScore": 91,
+    "vibe": "3-4 words max: rooftop pool, design-forward, beachfront boutique, historic palazzo",
+    "whyBook": "One compelling sentence - what makes this place special for THIS destination",
+    "curatedBy": "Mr & Mrs Smith / Design Hotels / SLH / Tablet / Independent",
+    "isLuxuryBrand": false
+  }
+]
+
+Remember: This person is escaping to sunshine. The hotel should feel like part of that escape, not an afterthought.`
+    }],
+  });
+
+  const content = response.content[0];
+  if (content.type !== 'text') {
+    throw new Error('Unexpected response type from Claude');
+  }
+
+  const jsonMatch = content.text.match(/\[[\s\S]*\]/);
+  if (!jsonMatch) {
+    throw new Error('No hotel data found');
+  }
+
+  const extracted = JSON.parse(jsonMatch[0]);
+
+  return extracted.map((h: {
+    name: string;
+    neighborhood?: string;
+    pricePerNight: number;
+    reviewScore?: number;
+    vibe?: string;
+    whyBook?: string;
+    curatedBy?: string;
+    isLuxuryBrand?: boolean;
+  }, i: number) => {
+    // Infer star rating from tier
+    const starRating = tier === 'luxe' ? 5 : tier === 'premium' ? 4 : 3;
     return {
-      id: `mock_${i}_${Date.now()}`,
+      id: `hotel_${i}_${Date.now()}`,
       name: h.name,
-      starRating: h.stars,
-      reviewScore: h.score,
-      pricePerNight,
-      totalPrice: pricePerNight * nights,
+      neighborhood: h.neighborhood,
+      starRating,
+      reviewScore: h.reviewScore || 85,
+      pricePerNight: h.pricePerNight,
+      totalPrice: h.pricePerNight * nights,
       currency: 'USD',
-      roomType: h.stars >= 5 ? 'Deluxe Suite' : h.stars >= 4 ? 'Premium Room' : 'Standard Room',
-      freeCancellation: h.stars >= 4,
-      breakfastIncluded: h.stars >= 5,
-      photo: `https://picsum.photos/seed/hotel${i + 100}/400/300`,
-      isLuxuryBrand: h.luxury,
+      roomType: h.vibe || (starRating >= 5 ? 'Luxury Suite' : starRating >= 4 ? 'Design Room' : 'Boutique Room'),
+      freeCancellation: true,
+      breakfastIncluded: starRating >= 5,
+      photo: `https://picsum.photos/seed/hotel${i + 300}/400/300`,
+      isLuxuryBrand: h.isLuxuryBrand || false,
+      reviewHighlights: h.whyBook,
+      curatedBy: h.curatedBy,
     };
   });
 }

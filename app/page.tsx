@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getCountryFlag } from '@/lib/destination-catalog';
 
 interface WeatherDay {
   date: string;
@@ -531,9 +532,9 @@ export default function Home() {
                 onChange={(e) => setUserAirport(e.target.value)}
                 className="bg-white/10 border border-white/30 rounded-lg px-3 py-1.5 text-sm font-display cursor-pointer hover:bg-white/20 transition focus:outline-none focus:ring-2 focus:ring-[var(--coral)]"
               >
-                {airports.map((ap) => (
+                {[...airports].sort((a, b) => a.city.localeCompare(b.city)).map((ap) => (
                   <option key={ap.code} value={ap.code} className="text-[var(--forest)]">
-                    {ap.code} - {ap.city}
+                    {ap.city} - {ap.code}
                   </option>
                 ))}
               </select>
@@ -610,7 +611,7 @@ export default function Home() {
                   
                   <div className="p-5">
                     <h4 className="font-display text-xl text-[var(--forest)] mb-1">
-                      {dest.city.toUpperCase()}
+                      {dest.city.toUpperCase()} {getCountryFlag(dest.country)}
                     </h4>
                     <p className="text-sm text-[var(--forest-light)] mb-4">
                       {dest.country} • {dest.description}
@@ -798,7 +799,7 @@ export default function Home() {
                   {tripPackage && (
                     <p className="text-xs text-[var(--coral)] font-medium mt-1">
                       {(() => {
-                        const dep = new Date(tripPackage.departureDate);
+                        const dep = new Date(tripPackage.departureDate + 'T12:00:00');
                         const ret = new Date(dep);
                         ret.setDate(ret.getDate() + nights);
                         return `${dep.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} – ${ret.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}`;
@@ -910,13 +911,37 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <button 
-                    className="btn-coral w-full py-3 disabled:opacity-50"
-                    onClick={handleBookNow}
-                    disabled={isBooking}
-                  >
-                    {isBooking ? 'BOOKING...' : 'BOOK NOW →'}
-                  </button>
+                  <div className="space-y-2">
+                    <button
+                      className="btn-coral w-full py-3"
+                      onClick={() => {
+                        const dep = tripPackage.departureDate;
+                        const ret = new Date(dep);
+                        ret.setDate(ret.getDate() + nights);
+                        const retStr = ret.toISOString().split('T')[0];
+                        const cabin = selectedTier === 'luxe' ? 'BUSINESS' : selectedTier === 'premium' ? 'PREMIUM_ECONOMY' : 'ECONOMY';
+                        const url = `https://www.booking.com/flights/search?type=ROUNDTRIP&adults=1&cabinClass=${cabin}&from=${userAirport}.AIRPORT&to=${selectedDestination?.airportCode}.AIRPORT&depart=${dep}&return=${retStr}`;
+                        window.open(url, '_blank');
+                      }}
+                    >
+                      BOOK FLIGHT →
+                    </button>
+                    <button
+                      className="w-full py-3 rounded-full border-2 border-[var(--forest)] text-[var(--forest)] font-display text-sm hover:bg-[var(--forest)] hover:text-white transition"
+                      onClick={() => {
+                        const hotelName = encodeURIComponent(tripPackage.hotel.name);
+                        const city = encodeURIComponent(selectedDestination?.city || '');
+                        const dep = tripPackage.departureDate;
+                        const ret = new Date(dep);
+                        ret.setDate(ret.getDate() + nights);
+                        const retStr = ret.toISOString().split('T')[0];
+                        const url = `https://www.booking.com/searchresults.html?ss=${hotelName}+${city}&checkin=${dep}&checkout=${retStr}`;
+                        window.open(url, '_blank');
+                      }}
+                    >
+                      BOOK HOTEL →
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="text-center py-8">

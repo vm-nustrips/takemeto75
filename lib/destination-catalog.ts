@@ -3,7 +3,7 @@ import { Destination } from './types';
 export const destinations: Destination[] = [
   // CARIBBEAN & CENTRAL AMERICA
   { id: 'cancun', city: 'Cancun', country: 'Mexico', lat: 21.1619, lon: -86.8515, airportCode: 'CUN', description: 'White sand beaches and turquoise waters', image: 'https://picsum.photos/seed/cancun/800/600', costOfLiving: 'low', highlights: ['🏖️ 14 miles of beaches', '🌮 $2 street tacos', '🚌 Day trips to Tulum', '💵 USD accepted'] },
-  { id: 'san-juan', city: 'San Juan', country: 'Puerto Rico', lat: 18.4655, lon: -66.1057, airportCode: 'SJU', description: 'Colonial charm meets Caribbean vibes', image: 'https://picsum.photos/seed/sanjuan/800/600', costOfLiving: 'medium', highlights: ['🇺🇸 No passport needed', '🏰 Old San Juan', '🍹 Pina colada birthplace', '🏖️ Condado Beach'] },
+  { id: 'san-juan', city: 'San Juan', country: 'Puerto Rico', lat: 18.4373, lon: -66.0041, airportCode: 'SJU', description: 'Colonial charm meets Caribbean vibes', image: 'https://picsum.photos/seed/sanjuan/800/600', costOfLiving: 'medium', highlights: ['🇺🇸 No passport needed', '🏰 Old San Juan', '🍹 Pina colada birthplace', '🏖️ Condado Beach'] },
   { id: 'nassau', city: 'Nassau', country: 'Bahamas', lat: 25.0443, lon: -77.3504, airportCode: 'NAS', description: 'Island paradise with crystal clear waters', image: 'https://picsum.photos/seed/nassau/800/600', costOfLiving: 'medium', highlights: ['🐷 Swimming pigs', '🏝️ Paradise Island', '🤿 Best snorkeling', '🛳️ Avoid cruise days'] },
   { id: 'aruba', city: 'Oranjestad', country: 'Aruba', lat: 12.5211, lon: -70.0345, airportCode: 'AUA', description: 'One happy island with perfect weather', image: 'https://picsum.photos/seed/aruba/800/600', costOfLiving: 'medium', highlights: ['☀️ Outside hurricane belt', '🏖️ Eagle Beach top 10', '🚗 Rent a UTV', '💵 USD accepted'] },
   { id: 'costa-rica', city: 'San Jose', country: 'Costa Rica', lat: 9.9281, lon: -84.0907, airportCode: 'SJO', description: 'Rainforests, beaches, and wildlife', image: 'https://picsum.photos/seed/costarica/800/600', costOfLiving: 'low', highlights: ['🦥 Sloths everywhere', '🌋 Arenal hot springs', '🏄 Two coasts', '🌿 25% national parks'] },
@@ -54,7 +54,7 @@ export const destinations: Destination[] = [
   { id: 'istanbul', city: 'Istanbul', country: 'Turkey', lat: 41.0082, lon: 28.9784, airportCode: 'IST', description: 'Where East meets West', image: 'https://picsum.photos/seed/istanbul/800/600', costOfLiving: 'low', highlights: ['🕌 Hagia Sophia', '🛒 Grand Bazaar', '🍢 Street food', '⛴️ Bosphorus cruise'] },
   { id: 'tel-aviv', city: 'Tel Aviv', country: 'Israel', lat: 32.0853, lon: 34.7818, airportCode: 'TLV', description: 'Mediterranean beaches and nightlife', image: 'https://picsum.photos/seed/telaviv/800/600', costOfLiving: 'high', highlights: ['🏖️ Beach culture', '🎉 Epic nightlife', '🥙 Best hummus', '🏛️ Jaffa old town'] },
   // MIDDLE EAST & NORTH AFRICA
-  { id: 'dubai', city: 'Dubai', country: 'UAE', lat: 25.2048, lon: 55.2708, airportCode: 'DXB', description: 'Futuristic skyline and desert adventures', image: 'https://picsum.photos/seed/dubai/800/600', costOfLiving: 'high', highlights: ['🏙️ Burj Khalifa', '🏜️ Desert safari', '🛍️ Dubai Mall', '🍽️ Friday brunch'] },
+  { id: 'dubai', city: 'Dubai', country: 'UAE', lat: 25.2532, lon: 55.3657, airportCode: 'DXB', description: 'Futuristic skyline and desert adventures', image: 'https://picsum.photos/seed/dubai/800/600', costOfLiving: 'high', highlights: ['🏙️ Burj Khalifa', '🏜️ Desert safari', '🛍️ Dubai Mall', '🍽️ Friday brunch'] },
   { id: 'marrakech', city: 'Marrakech', country: 'Morocco', lat: 31.6295, lon: -7.9811, airportCode: 'RAK', description: 'Souks, riads, and vibrant culture', image: 'https://picsum.photos/seed/marrakech/800/600', costOfLiving: 'low', highlights: ['🏨 Stay in a riad', '🛍️ Souk haggling', '🍵 Free mint tea', '🏜️ Desert trips'] },
   { id: 'cairo', city: 'Cairo', country: 'Egypt', lat: 30.0444, lon: 31.2357, airportCode: 'CAI', description: 'Pyramids and ancient wonders', image: 'https://picsum.photos/seed/cairo/800/600', costOfLiving: 'low', highlights: ['🔺 Giza Pyramids', '🏛️ Egyptian Museum', '⛵ Nile felucca', '🛒 Khan el-Khalili'] },
   { id: 'jordan', city: 'Amman', country: 'Jordan', lat: 31.9454, lon: 35.9284, airportCode: 'AMM', description: 'Petra and Dead Sea adventures', image: 'https://picsum.photos/seed/jordan/800/600', costOfLiving: 'medium', highlights: ['🏛️ Petra', '🌊 Dead Sea float', '🏜️ Wadi Rum', '🍽️ Mansaf feast'] },
@@ -122,4 +122,25 @@ export const destinations: Destination[] = [
 
 export function getDestinationByAirport(code: string): Destination | undefined {
   return destinations.find(d => d.airportCode === code);
+}
+
+export function getCountryFlag(country: string): string {
+  const flags: Record<string, string> = {
+    'Mexico': '🇲🇽', 'Puerto Rico': '🇵🇷', 'Bahamas': '🇧🇸', 'Aruba': '🇦🇼',
+    'Costa Rica': '🇨🇷', 'Colombia': '🇨🇴', 'Dominican Republic': '🇩🇴', 'Jamaica': '🇯🇲',
+    'Curacao': '🇨🇼', 'St. Lucia': '🇱🇨', 'Barbados': '🇧🇧', 'Turks and Caicos': '🇹🇨',
+    'Belize': '🇧🇿', 'Cayman Islands': '🇰🇾', 'Panama': '🇵🇦', 'Brazil': '🇧🇷',
+    'Argentina': '🇦🇷', 'Peru': '🇵🇪', 'Chile': '🇨🇱', 'Portugal': '🇵🇹',
+    'Spain': '🇪🇸', 'France': '🇫🇷', 'Italy': '🇮🇹', 'Croatia': '🇭🇷',
+    'Greece': '🇬🇷', 'Hungary': '🇭🇺', 'Czech Republic': '🇨🇿', 'Turkey': '🇹🇷',
+    'Israel': '🇮🇱', 'UAE': '🇦🇪', 'Morocco': '🇲🇦', 'Egypt': '🇪🇬', 'Jordan': '🇯🇴',
+    'South Africa': '🇿🇦', 'Tanzania': '🇹🇿', 'Mauritius': '🇲🇺', 'Kenya': '🇰🇪',
+    'India': '🇮🇳', 'Sri Lanka': '🇱🇰', 'Maldives': '🇲🇻', 'Indonesia': '🇮🇩',
+    'Thailand': '🇹🇭', 'Vietnam': '🇻🇳', 'Singapore': '🇸🇬', 'Malaysia': '🇲🇾',
+    'Cambodia': '🇰🇭', 'Philippines': '🇵🇭', 'Japan': '🇯🇵', 'South Korea': '🇰🇷',
+    'Taiwan': '🇹🇼', 'Hong Kong': '🇭🇰', 'Australia': '🇦🇺', 'New Zealand': '🇳🇿',
+    'Fiji': '🇫🇯', 'USA': '🇺🇸', 'Netherlands': '🇳🇱', 'Denmark': '🇩🇰', 'UK': '🇬🇧',
+    'Ireland': '🇮🇪', 'Germany': '🇩🇪', 'Austria': '🇦🇹', 'Switzerland': '🇨🇭', 'Canada': '🇨🇦'
+  };
+  return flags[country] || '';
 }

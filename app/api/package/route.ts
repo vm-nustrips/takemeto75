@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { destinations } from '@/lib/destination-catalog';
-import { searchFlights } from '@/lib/duffel';
+import { searchFlights } from '@/lib/flights';
 import { searchHotels } from '@/lib/hotels';
 import { selectBestPackage } from '@/lib/claude-selector';
 import { Tier, FlightOffer, HotelOffer } from '@/lib/types';
@@ -53,19 +53,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Destination not found' }, { status: 400 });
     }
 
-    // Calculate dates: leaving within 72hrs, variable nights
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const departureDate = tomorrow.toISOString().split('T')[0];
+    // Calculate dates: leaving within 18-36 hours
+    const departure = new Date();
+    departure.setTime(departure.getTime() + 27 * 60 * 60 * 1000); // ~27 hours from now
+    const departureDate = departure.toISOString().split('T')[0];
     
-    const returnDay = new Date(tomorrow);
+    const returnDay = new Date(departure);
     returnDay.setDate(returnDay.getDate() + nights);
     const returnDate = returnDay.toISOString().split('T')[0];
 
     // Search flights and hotels in parallel
     const [allFlights, allHotels] = await Promise.all([
       searchFlights(origin, destination.airportCode, departureDate, returnDate, 1, tier),
-      searchHotels(destination.lat, destination.lon, departureDate, returnDate, tier),
+      searchHotels(destination.lat, destination.lon, departureDate, returnDate, tier, destination.city, destination.country),
     ]);
 
     if (allFlights.length === 0 || allHotels.length === 0) {
